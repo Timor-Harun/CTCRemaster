@@ -1,0 +1,2 @@
+F:\SourceCodes\C++\CTCRemaster\x64\Debug\CTCRemaster.exe
+F:\SourceCodes\C++\CTCRemaster\x64\Debug\CTCRemaster.pdb

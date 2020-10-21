@@ -1,0 +1,16 @@
+<RCC>
+    <qresource prefix="/CTCMainWindow">
+        <file>Icons/light/window_close_hover.png</file>
+        <file>Icons/light/window_close_normal.png</file>
+        <file>Icons/light/window_close_press.png</file>
+        <file>Icons/light/window_min_hover.png</file>
+        <file>Icons/light/window_min_normal.png</file>
+        <file>Icons/light/window_min_press.png</file>
+        <file>Icons/light/window_option_hover.png</file>
+        <file>Icons/light/window_option_normal.png</file>
+        <file>Icons/light/window_option_press.png</file>
+        <file>Icons/close.png</file>
+        <file>Icons/min.png</file>
+        <file>Icons/topmost.png</file>
+    </qresource>
+</RCC>
