@@ -254,8 +254,6 @@ PythonScriptSystem* PythonScriptSystem::getInstance()
 bool PythonScriptSystem::doInitBuildIn()
 {
 	/********* GUI ********/
-	//QString pyFile_GUI = (QApplication::applicationDirPath() + "/Scripts/BuildIn/GUI.py").toStdString().c_str();
-	//Q_ASSERT(QFile::exists(pyFile_GUI));
 	_module_impl_(GUI);
 	_bind_pfn_(GUI, GetUIElementsJsonString);
 	_bind_pfn_(GUI, InvokeButtonClickShot);
@@ -275,7 +273,6 @@ bool PythonScriptSystem::doInitBuildIn()
 	/********* Debug ********/
 	_module_impl_(Debug);
 	_bind_pfn_(Debug, injectPoolPtr);
-
 	m_PFN_injectPoolPtr(boost::shared_ptr<ConsoleMessagePool>(Console->getPoolPtr()));
 	return true;
 }
@@ -294,6 +291,7 @@ bool PythonScriptSystem::doStartUp()
 	PyRun_SimpleString("import traceback");
 
 	//Ìí¼ÓPythonµÄÄ¿Â¼
+	auto a = QString("sys.path.append('%1')").arg(QApplication::applicationDirPath() + "/Scripts/BuildIn");
 	PyRun_SimpleString(QString("sys.path.append('%1')").arg(QApplication::applicationDirPath() + "/Scripts/BuildIn").toStdString().data());
 	PyRun_SimpleString(QString("sys.path.append('%1')").arg(QApplication::applicationDirPath() + "/Scripts/Custom").toStdString().data());
 	if (!doInitBuildIn())

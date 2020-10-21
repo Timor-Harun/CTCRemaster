@@ -45,7 +45,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <IncludePath>$(PYTHON_INCLUDE);$(BOOST_INCLUDE);F:\ProgrammingLib\QScintilla-2.11.5\Qt4Qt5\;D:\software\QScintilla-2.11.5\Qt4Qt5;E:\QScintilla-2.11.5\Qt4Qt5;$(IncludePath)</IncludePath>
     <LibraryPath>$(PYTHON_LIB);$(BOOST_LIb);$(LibraryPath)</LibraryPath>
-    <OutDir>.\bin</OutDir>
+    <OutDir>bin\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
   </PropertyGroup>
@@ -140,6 +140,21 @@
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="CTCMainWindow.ui" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Scripts\BuildIn\Debug.py" />
+    <None Include="bin\Scripts\BuildIn\GUI.py" />
+    <None Include="bin\Scripts\BuildIn\GUIUtility.py" />
+    <None Include="bin\Scripts\BuildIn\Menu.py" />
+    <None Include="bin\Scripts\BuildIn\MenuManager.py" />
+    <None Include="bin\Scripts\BuildIn\qt_module_wrapped.pyd" />
+    <None Include="bin\Scripts\Custom\CTCBase.py" />
+    <None Include="bin\Scripts\Custom\IPCTC.py" />
+    <None Include="bin\Scripts\Custom\JitterBug.py" />
+    <None Include="bin\Scripts\Custom\Server.py" />
+    <None Include="bin\Scripts\Custom\testMenu.py" />
+    <None Include="bin\Scripts\Custom\testWidget.py" />
+    <None Include="bin\Scripts\Test\test.py" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">

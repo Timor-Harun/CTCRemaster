@@ -34,9 +34,9 @@ public:
 
 	void setHeadTitle(const QStringList& headList)
 	{
+		this->setColumnCount(headList.size());
 		this->setHorizontalHeaderLabels(headList);
 		//this->setRowCount(headList.size());
-		this->setColumnCount(headList.size());
 	}
 
 	void appendRow(const std::vector<std::string>& contents)

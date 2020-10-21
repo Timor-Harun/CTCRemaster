@@ -61,5 +61,8 @@ class testWidget(Widget):
     def OnCheckState_Changed(self):
         GUI.set.SetLineEditText(self,"testEdit","testCheckBox changed!")
 
+    def OnStart(self):
+        pass
+
     def OnClose(self):
         pass

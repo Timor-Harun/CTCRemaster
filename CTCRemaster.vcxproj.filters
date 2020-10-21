@@ -46,6 +46,18 @@
     <Filter Include="Header Files\PythonScriptSystem\GUI">
       <UniqueIdentifier>{b2993357-d49d-4af6-a254-5208a15c0cdc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="PyScripts">
+      <UniqueIdentifier>{fe36e4b5-42a7-4db4-9a0e-3e302fc833c4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PyScripts\BuildIn">
+      <UniqueIdentifier>{92354d6f-3a54-4926-8a11-0694fc18e18e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PyScripts\Custom">
+      <UniqueIdentifier>{c4340dd1-b31a-4c43-850d-c270f2c412ec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PyScripts\Test">
+      <UniqueIdentifier>{e6df441c-b2f6-4e88-8409-a8a0e2d7b123}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <QtRcc Include="CTCMainWindow.qrc">
@@ -179,5 +191,46 @@
     <QtUic Include="CTCMainWindow.ui">
       <Filter>Resource Files</Filter>
     </QtUic>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Scripts\Test\test.py">
+      <Filter>PyScripts\Test</Filter>
+    </None>
+    <None Include="bin\Scripts\Custom\testMenu.py">
+      <Filter>PyScripts\Custom</Filter>
+    </None>
+    <None Include="bin\Scripts\Custom\testWidget.py">
+      <Filter>PyScripts\Custom</Filter>
+    </None>
+    <None Include="bin\Scripts\Custom\Server.py">
+      <Filter>PyScripts\Custom</Filter>
+    </None>
+    <None Include="bin\Scripts\Custom\JitterBug.py">
+      <Filter>PyScripts\Custom</Filter>
+    </None>
+    <None Include="bin\Scripts\Custom\IPCTC.py">
+      <Filter>PyScripts\Custom</Filter>
+    </None>
+    <None Include="bin\Scripts\Custom\CTCBase.py">
+      <Filter>PyScripts\Custom</Filter>
+    </None>
+    <None Include="bin\Scripts\BuildIn\Debug.py">
+      <Filter>PyScripts\BuildIn</Filter>
+    </None>
+    <None Include="bin\Scripts\BuildIn\GUI.py">
+      <Filter>PyScripts\BuildIn</Filter>
+    </None>
+    <None Include="bin\Scripts\BuildIn\GUIUtility.py">
+      <Filter>PyScripts\BuildIn</Filter>
+    </None>
+    <None Include="bin\Scripts\BuildIn\Menu.py">
+      <Filter>PyScripts\BuildIn</Filter>
+    </None>
+    <None Include="bin\Scripts\BuildIn\MenuManager.py">
+      <Filter>PyScripts\BuildIn</Filter>
+    </None>
+    <None Include="bin\Scripts\BuildIn\qt_module_wrapped.pyd">
+      <Filter>PyScripts\BuildIn</Filter>
+    </None>
   </ItemGroup>
 </Project>

@@ -175,7 +175,7 @@ class Server(Widget):
         GUI.set.SetControlEnabled(self,"button_export",False)
         GUI.set.SetControlEnabled(self,"button_deleteClient",False)
         GUI.set.SetControlEnabled(self,"button_closeServer",False)
-        GUI.modify.AppendTableItem(self,"table_client",["12","23","45","6","6","6"])
+        #GUI.modify.AppendTableItem(self,"table_client",["12","23","45","6","6","6"])
 
     def OnClose(self):
         pass
