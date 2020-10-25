@@ -7,7 +7,7 @@ import os
 import random
 import time
 from Debug import Debug
-
+from GUIUtility import GUIUtility
 class ClientInfo(object):
 
     CLIENT_STATUS_CONNECTED = 0
@@ -22,6 +22,7 @@ class ClientInfo(object):
         self.MessagesPool = []
         self.Status = -1
         self.lastTime = 0
+        self.startTime = time.time()
 
     def clear(self):
         self.MessageCount = []
@@ -38,7 +39,7 @@ class ClientInfo(object):
 
     def getFrontMessage(self):
         msg = self.MessagesPool[0]
-        del self.MessagesPool[0]
+        #del self.MessagesPool[0]
         return msg
 
     def setStatus(self,status):
@@ -95,7 +96,6 @@ class Server_Impl(object):
                 info = ClientInfo((str)(socket_info_list[0]),(int)(socket_info_list[1]))
                 info.setStatus(ClientInfo.CLIENT_STATUS_CONNECTED)
                 self.clientMap[addr] = info
-
             Debug.printInfo("connected Client:"+str(client))
             # 将客户端加入列表
             self.socket_list.append(client)
@@ -175,7 +175,79 @@ class Server(Widget):
         GUI.set.SetControlEnabled(self,"button_export",False)
         GUI.set.SetControlEnabled(self,"button_deleteClient",False)
         GUI.set.SetControlEnabled(self,"button_closeServer",False)
+        GUI.set.SetIP(self,"edit_serverIP","127.0.0.1")
+        GUI.set.SetLineEditText(self,"edit_port","30001")
         #GUI.modify.AppendTableItem(self,"table_client",["12","23","45","6","6","6"])
 
     def OnClose(self):
         pass
+
+    @GUI.Slot(receiver = "button_StartServer",eventType = EventType.Button_Click)
+    def OnClick_button_StartServer(self):
+        ip = GUI.get.GetIP(self,"edit_serverIP")
+        port = GUI.get.GetLineEditText(self,"edit_port")
+        self.serverPtr = Server_Impl(ip,(int)(port))
+        if self.serverPtr.run():
+            GUI.set.SetControlEnabled(self,"button_StartServer",False)
+            GUI.set.SetControlEnabled(self,"edit_serverIP",False)
+            GUI.set.SetControlEnabled(self,"edit_port",False)
+            GUI.set.SetControlEnabled(self,"button_closeServer",True)
+        def client_table_updater():
+            while True:
+                try:
+                    rowCount = GUI.get.GetTableRowCount(self,"table_client")
+                    index = 0
+                    for key,value in self.serverPtr.clientMap.items():
+                        info = value
+                        if(index >= rowCount):
+                            GUI.modify.AppendTableItem(self,"table_client",[info.IP,(str)(info.Port),str(info.getMessageCount()),str((time.time()-info.startTime))+"秒","已连接","None"])          
+                        else:
+                            GUI.modify.SetTableItem(self,"table_client",index,2,str(info.getMessageCount()))
+                            GUI.modify.SetTableItem(self,"table_client",index,3,str((time.time()-info.startTime))+"秒")
+                        index+=1
+                except Exception as e:
+                    Debug.printError(str(e))
+                    break
+                time.sleep(0.1)
+        threading.Thread(target = client_table_updater).start()
+
+    @GUI.Slot(receiver="table_client",eventType=EventType.TableView_Selection_Chanced)
+    def On_table_client_selection_changed(self,index):
+        self.index = index
+        GUI.set.SetControlEnabled(self,"button_export",index!=-1)
+        GUI.set.SetControlEnabled(self,"button_deleteClient",index!=-1)
+
+    @GUI.Slot(receiver="button_export",eventType=EventType.Button_Click)
+    def OnClick_button_export(self):
+        path = GUIUtility.AskSaveFile("保存隐蔽信道文件","CSV file(*.csv)")
+        info = list(self.serverPtr.clientMap.values())[self.index].MessagesPool
+
+        def exportData(fileName:str,Infos:list)->bool:
+            import csv
+            try:
+                with open(fileName, 'w', newline='') as f:
+                    f_csv = csv.writer(f)
+                    f_csv.writerow(["IPDs","Content"])
+                    for i in range(0,len(Infos)):
+                        if(isinstance(Infos[i],list)):
+                            row = []
+                            for j in range(0,len(Infos[i])):
+                                row.append(Infos[i][j])
+                            f_csv.writerow(row)
+                        else:
+                            f_csv.writerow([Infos[i]])
+            except Exception as e:
+                Debug.printError(str(e))
+                return False
+            return True
+
+        if exportData(path,info):
+            Debug.printInfo("导出成功!")
+        else:
+            Debug.printInfo("导出失败!")
+
+    @GUI.Slot(receiver="button_closeServer",eventType=EventType.Button_Click)
+    def OnClick_button_closeServer(self):
+        self.serverPtr.shutDown()
+        GUI.set.SetControlEnabled(self,"button_StartServer",True)
+        GUI.set.SetControlEnabled(self,"button_closeServer",False)

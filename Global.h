@@ -69,13 +69,13 @@ struct MenuItemShortCutInfo
 struct MenuItemInfo
 {
 	QStringList path;
-	const QString &uuid;
+	QString uuid;
 	bool checkable;
 	MenuItemShortCutInfo shortCutInfo;
 	int group;
 	int pos;
 
-	MenuItemInfo(QStringList _path, 
+	MenuItemInfo(const QStringList &_path, 
 		         const QString &_uuid,
 		         bool _checkable,
 				 MenuItemShortCutInfo _shortCutInfo,

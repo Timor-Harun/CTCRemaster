@@ -22,6 +22,7 @@
 #include "WrappedWidget.h"
 #include "Global.h"
 #include "ConsoleLogic.h"
+#include "PlotManager.h"
 #define BIND_PFN(className,function) m_PFN_##function = object((handle<>(borrowed(PyRun_String(#className"."#function, Py_eval_input, m_main_namespace.ptr(), m_main_namespace.ptr())))));
 #define _bind_pfn_(className,function) m_PFN_##function = object((handle<>(borrowed(PyRun_String(#className"."#function, Py_eval_input, dict_##className.ptr(),  dict_##className.ptr())))));
 
@@ -61,6 +62,7 @@ private:
 	object m_PFN_GetCurrentWidgetInfos;
 	object m_PFN_InvokeEditFinishedShot;
 	object m_PFN_InvokeCheckStateChangedShot;
+	object m_PFN_InvokeTableSelectedIndexShot;
 
 	/*******Menu PFN*******/
 	object m_PFN_InsertMenuItem;
@@ -68,6 +70,8 @@ private:
 	object m_PFN_GetFunction;
 	object m_PFN_GetMenuItemInfo;
 
+	/*******Plt PFN*******/
+	object m_PFN_SetPlotManagerPtr;
 	/***********Debug 部分***********/
 
 	//可调用的方法injectPoolPtr，注入ConsoleMessagePool的指针
@@ -82,6 +86,7 @@ private:
 	_module_declare_(MenuManager);
 	_module_declare_(GUI);
 	_module_declare_(Debug);
+	_module_declare_(plt);
 
 	/*******File List*******/
 	QList<QString> m_widgetPythonFiles;

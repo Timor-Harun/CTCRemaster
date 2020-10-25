@@ -7,7 +7,7 @@ class Menu():
     @staticmethod
     def MenuItem(path,checkable,group = -1,pos = -1,shortcut = str()):
         if len(path) == 0  or path[0] =='/' or path[-1] =='/':
-            Debug.printWarning("Invalid path")
+            Debug.printWarning("Invalid path:"+path)
         def decorator(func):
             MenuManager.InsertMenuItem(path,func,checkable,group,pos,shortcut)
             @functools.wraps(func)

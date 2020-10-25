@@ -23,7 +23,7 @@ class IPCTC_Impl(CTCBase):
     #与C++ 对接，设置信道参数
     #合法的设置方式 IPCTC.setParameter(threshold = [40,60,80],period=50) 或 IPCTC.setParameter(threshold = [50])
     #涉及对threshold的类型判断
-    def setParameter(self,kwargs)->bool:
+    def setParameter(self,**kwargs)->bool:
         self.kwargs = kwargs
         if("thresholds" not in self.kwargs):
             raise ValueError("missing param 'thresholds'")
@@ -108,13 +108,20 @@ class IPCTC(Widget):
         GUI.Spacer(50)
         GUI.Label("服务器端口号")
         GUI.LineEdit("edit_port")
+        GUI.Label("发包数量")
+        GUI.LineEdit("edit_count")
         GUI.EndLayout()
         GUI.EndGroup()
 
         GUI.BeginGroup("Propery Setting")
         GUI.BeginHorizontalLayout()
-        GUI.Label("窗口间隔")
+        GUI.Label("间隔时间")
         GUI.LineEdit("edit_interval")
+        GUI.Spacer(50)
+        GUI.Label("轮换模式")
+        GUI.CheckBox("check_turn","")
+        GUI.Label("轮换周期")
+        GUI.LineEdit("edit_period")
         GUI.EndLayout()
         GUI.EndGroup()
 
@@ -138,7 +145,9 @@ class IPCTC(Widget):
     def OnStart(self):
         GUI.set.SetControlEnabled(self,"button_Connect",True)
         GUI.set.SetControlEnabled(self,"button_Send",False)
-
+        GUI.set.SetControlEnabled(self,"edit_period",False)
+        GUI.set.SetIP(self,"edit_serverIP","127.0.0.1")
+        GUI.set.SetLineEditText(self,"edit_port","30001")
     @GUI.Slot(receiver = "button_Connect",eventType = EventType.Button_Click)
     def OnClick_button_Connect(self):
         ip = GUI.get.GetIP(self,"edit_serverIP")
@@ -151,6 +160,40 @@ class IPCTC(Widget):
 
     @GUI.Slot(receiver = "button_Send",eventType = EventType.Button_Click)
     def OnClick_button_Send(self):
-        pass
+        self.ipctc.run()
+        
+    @GUI.Slot(receiver = "check_turn",eventType = EventType.CheckState_Changed)
+    def OnCheckStateChanged_check_turn(self):
+        checked = GUI.get.GetChecked(self,"check_turn")
+        GUI.set.SetControlEnabled(self,"edit_period",checked)
+
+    @GUI.Slot(receiver = "button_Send",eventType = EventType.Button_Click)
+    def OnClick_button_Send(self):
+        import json
+        checked = GUI.get.GetChecked(self,"check_turn")
+        try:
+            param_interval = json.loads(GUI.get.GetLineEditText(self,"edit_interval"))
+            typeStr = str(type(param_interval))
+            Debug.printInfo("param_interval={} typeStr={}".format(param_interval,typeStr))
+            if checked:
+                if typeStr != "<class 'list'>":
+                    Debug.printError("IPCTC参数'间隔时间' 类型错误: 需要类型:list,实际类型:"+typeStr)
+                    return
+                else:
+                    param_period = json.loads(GUI.get.GetLineEditText(self,"edit_period"))
+                    self.ipctc.setParameter(thresholds = param_interval,period = param_period)
+            else:
+                if typeStr != "<class 'int'>" or typeStr != "<class 'float'>":
+                    Debug.printError("IPCTC参数'间隔时间' 类型错误: 需要类型:int 或 float,实际类型:"+typeStr)
+                    return
+                else:
+                    self.ipctc.setParameter(thresholds = param_interval)
+            self.ipctc.count = json.loads(GUI.get.GetLineEditText(self,"edit_count"))
+        except Exception as e:
+            Debug.printError(str(e))
+            return
+
+        self.ipctc.run()
+
     def OnClose(self):
         pass

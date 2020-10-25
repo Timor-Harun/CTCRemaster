@@ -1,2 +1,2 @@
 CONFIG += no_fixpath
-QT += core gui widgets xml
+QT += charts core datavisualization gui widgets xml

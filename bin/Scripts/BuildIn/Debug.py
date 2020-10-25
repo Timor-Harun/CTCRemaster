@@ -44,7 +44,7 @@ class Debug(object):
     @staticmethod
     def printWarning(message)->None:
         calledInfo = Debug.getCalledInfo()
-        Debug.poolPtr.pushMessage(consolemsg_class(qstr(calledInfo),qstr(message),msgtype_enum.Warining))
+        Debug.poolPtr.pushMessage(consolemsg_class(qstr(calledInfo),qstr(message),msgtype_enum.Warning))
 
     @staticmethod
     def printError(message)->None:

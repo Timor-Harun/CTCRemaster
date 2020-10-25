@@ -28,15 +28,13 @@ public:
 		this->setSelectionBehavior(QAbstractItemView::SelectRows);
 		this->setSelectionMode(QAbstractItemView::SingleSelection);
 		this->horizontalHeader()->setHighlightSections(false);
-		this->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);    //x先自适应宽度
-		//this->horizontalHeader()->setSectionResizeMode(0, QHeaderView::ResizeToContents);     //然后设置要根据内容使用宽度的列
+		this->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
 	}
 
 	void setHeadTitle(const QStringList& headList)
 	{
 		this->setColumnCount(headList.size());
 		this->setHorizontalHeaderLabels(headList);
-		//this->setRowCount(headList.size());
 	}
 
 	void appendRow(const std::vector<std::string>& contents)
@@ -84,7 +82,10 @@ public:
 
 	int getSelectedRowIndex()
 	{
-		int row = this->selectedRanges().front().topRow();
+		auto range = this->selectedRanges();
+		if (!range.size()) return -1;
+		auto frontRange = range.front();
+		int row = frontRange.topRow();
 		return row;
 	}
 };

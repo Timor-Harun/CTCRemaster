@@ -103,7 +103,7 @@ WrappedWidget* PythonScriptSystem::doGetWidgetCreation(const QString &fileName)
 								else if (typeCode == 11)
 								{
 									QString objectName = _array[1].toString();
-									IPAddress * ipAddress = widget->doIPAddress(objectName);
+									IPAddress* ipAddress = widget->doIPAddress(objectName);
 									call_method<void>(infoHandle.get(), "addHandle", objectName.toStdString(), typeCode, boost::shared_ptr<IPAddress>(ipAddress));
 								}
 								else if (typeCode == 12)
@@ -128,7 +128,6 @@ WrappedWidget* PythonScriptSystem::doGetWidgetCreation(const QString &fileName)
 										 headers << _jsonArray[i].toString();
 									 }
 									 WrappedTableWidget* table = widget->doTable(objectName, headers);
-									 table->appendRow({ "1","2","3","4","5","6123" });
 									 call_method<void>(infoHandle.get(), "addHandle", objectName.toStdString(), typeCode, boost::shared_ptr<WrappedTableWidget>(table));
 								}
 							}
@@ -163,7 +162,15 @@ WrappedWidget* PythonScriptSystem::doGetWidgetCreation(const QString &fileName)
 						m_PFN_InvokeCheckStateChangedShot(objectName.toStdString());
 					}
 					py_try_end_safe; });
-			}
+
+				QObject::connect(widget, &WrappedWidget::signal_TableSelectedIndexChanged, [=](QString objectName,int index) {
+					py_try_begin_safe
+					{
+						m_PFN_SetCurrentUUID(widget->getUUID().toStdString());
+						m_PFN_InvokeTableSelectedIndexShot(objectName.toStdString(),index);
+					}
+					py_try_end_safe; });
+				}
 			py_try_end_safe;
 			m_threadState = PyEval_SaveThread();
 			break;
@@ -262,7 +269,7 @@ bool PythonScriptSystem::doInitBuildIn()
 	_bind_pfn_(GUI, GetCurrentWidgetInfos);
 	_bind_pfn_(GUI, InvokeEditFinishedShot);
 	_bind_pfn_(GUI, InvokeCheckStateChangedShot);
-
+	_bind_pfn_(GUI, InvokeTableSelectedIndexShot);
 	/********* Debug ********/
 	_module_impl_(MenuManager);
 	_bind_pfn_(MenuManager, InsertMenuItem);
@@ -274,6 +281,11 @@ bool PythonScriptSystem::doInitBuildIn()
 	_module_impl_(Debug);
 	_bind_pfn_(Debug, injectPoolPtr);
 	m_PFN_injectPoolPtr(boost::shared_ptr<ConsoleMessagePool>(Console->getPoolPtr()));
+
+	/********* Plt ********/
+	_module_impl_(plt);
+	_bind_pfn_(plt, SetPlotManagerPtr);
+	m_PFN_SetPlotManagerPtr(boost::shared_ptr<PlotManager>(plt));
 	return true;
 }
 
@@ -355,7 +367,7 @@ QList<MenuItemInfo> PythonScriptSystem::getMenuItemInfos()
 
 			MenuItemShortCutInfo shortCutInfo(modifierCtrl, modifierShift, keyCode);
 
-			ans.push_back(MenuItemInfo(pathList, uuid.c_str(), checkable, shortCutInfo, group, pos));
+			ans.push_back(MenuItemInfo(pathList, QString::fromStdString(uuid), checkable, shortCutInfo, group, pos));
 		}
 	}
 

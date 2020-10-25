@@ -31,7 +31,7 @@ class MenuManager():
         try:
             global MenuItemMap
             import uuid
-            ret = str(uuid.uuid1())
+            ret = str(uuid.uuid1())[0:8]
             shortCutInfo = MenuManager.__PraseShortCut(shortcut)
             MenuItemMap[ret] = [MenuManager.__SplitPath(path),checkable,group,pos,shortCutInfo,func]
             return str(ret)

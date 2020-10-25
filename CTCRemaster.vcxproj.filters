@@ -43,9 +43,6 @@
     <Filter Include="Source Files\Utility">
       <UniqueIdentifier>{a45c5bac-2f71-443b-a69c-77fabaf9f4dc}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\PythonScriptSystem\GUI">
-      <UniqueIdentifier>{b2993357-d49d-4af6-a254-5208a15c0cdc}</UniqueIdentifier>
-    </Filter>
     <Filter Include="PyScripts">
       <UniqueIdentifier>{fe36e4b5-42a7-4db4-9a0e-3e302fc833c4}</UniqueIdentifier>
     </Filter>
@@ -57,6 +54,15 @@
     </Filter>
     <Filter Include="PyScripts\Test">
       <UniqueIdentifier>{e6df441c-b2f6-4e88-8409-a8a0e2d7b123}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Plot">
+      <UniqueIdentifier>{c067be5f-c677-48ed-b785-5742b349f2d5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Plot">
+      <UniqueIdentifier>{2fa00a92-a868-49a9-bb07-29353d084ffd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\GUI">
+      <UniqueIdentifier>{b2993357-d49d-4af6-a254-5208a15c0cdc}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -89,79 +95,85 @@
     <ClCompile Include="QtNavTreeView.cpp">
       <Filter>Source Files\GUI</Filter>
     </ClCompile>
-    <ClCompile Include="PythonCodeEditor.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="DockTabWidget.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="DockTabBar.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="WrappedProgressBar.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="WrappedWidget.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="WrappedTableWidget.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="IPAddress.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="ConsoleMessagePool.cpp">
+      <Filter>Source Files\ConsoleSystem</Filter>
     </ClCompile>
     <ClCompile Include="ConsoleLogic.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\ConsoleSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="DockTabBar.cpp">
+      <Filter>Source Files\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="DockTabWidget.cpp">
+      <Filter>Source Files\GUI</Filter>
     </ClCompile>
     <ClCompile Include="IconButton.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="IPAddress.cpp">
+      <Filter>Source Files\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="PythonCodeEditor.cpp">
+      <Filter>Source Files\GUI</Filter>
     </ClCompile>
     <ClCompile Include="SingletonDialog.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\GUI</Filter>
     </ClCompile>
-    <ClCompile Include="ConsoleMessagePool.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="WrappedProgressBar.cpp">
+      <Filter>Source Files\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="WrappedTableWidget.cpp">
+      <Filter>Source Files\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="WrappedWidget.cpp">
+      <Filter>Source Files\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="PlotManager.cpp">
+      <Filter>Source Files\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="PlotWindow.cpp">
+      <Filter>Source Files\GUI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="ConsoleListWidget.h">
-      <Filter>Header Files\PythonScriptSystem\GUI</Filter>
+      <Filter>Header Files\GUI</Filter>
     </QtMoc>
     <QtMoc Include="PythonScriptSystem.h">
       <Filter>Header Files\PythonScriptSystem</Filter>
     </QtMoc>
     <QtMoc Include="CTCMainWindow.h">
-      <Filter>Header Files\PythonScriptSystem\GUI</Filter>
+      <Filter>Header Files\GUI</Filter>
     </QtMoc>
     <QtMoc Include="TitleBarWidget.h">
-      <Filter>Header Files\PythonScriptSystem\GUI</Filter>
+      <Filter>Header Files\GUI</Filter>
     </QtMoc>
     <QtMoc Include="QtNavListView.h">
-      <Filter>Header Files\PythonScriptSystem\GUI</Filter>
+      <Filter>Header Files\GUI</Filter>
     </QtMoc>
     <QtMoc Include="QtNavTreeView.h">
-      <Filter>Header Files\PythonScriptSystem\GUI</Filter>
-    </QtMoc>
-    <QtMoc Include="DockTabBar.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
-    <QtMoc Include="DockTabWidget.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
-    <QtMoc Include="WrappedProgressBar.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
-    <QtMoc Include="WrappedWidget.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
-    <QtMoc Include="WrappedTableWidget.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
-    <QtMoc Include="IPAddress.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\GUI</Filter>
     </QtMoc>
     <QtMoc Include="ConsoleLogic.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\ConsoleSystem</Filter>
+    </QtMoc>
+    <QtMoc Include="DockTabWidget.h">
+      <Filter>Source Files\ConsoleSystem</Filter>
+    </QtMoc>
+    <QtMoc Include="DockTabBar.h">
+      <Filter>Header Files\GUI</Filter>
+    </QtMoc>
+    <QtMoc Include="IPAddress.h">
+      <Filter>Header Files\GUI</Filter>
+    </QtMoc>
+    <QtMoc Include="WrappedProgressBar.h">
+      <Filter>Header Files\GUI</Filter>
+    </QtMoc>
+    <QtMoc Include="WrappedTableWidget.h">
+      <Filter>Header Files\GUI</Filter>
+    </QtMoc>
+    <QtMoc Include="WrappedWidget.h">
+      <Filter>Header Files\GUI</Filter>
     </QtMoc>
   </ItemGroup>
   <ItemGroup>
@@ -169,22 +181,28 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ConsoleMessageItemWidget.h">
-      <Filter>Header Files\PythonScriptSystem\GUI</Filter>
+      <Filter>Header Files\GUI</Filter>
     </ClInclude>
-    <ClInclude Include="PythonCodeEditor.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="PlotManager.h">
+      <Filter>Header Files\Plot</Filter>
     </ClInclude>
-    <ClInclude Include="Utility.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="SingletonDialog.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="IconButton.h">
-      <Filter>Resource Files</Filter>
+    <ClInclude Include="PlotWindow.h">
+      <Filter>Header Files\Plot</Filter>
     </ClInclude>
     <ClInclude Include="ConsoleMessagePool.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\ConsoleSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="PythonCodeEditor.h">
+      <Filter>Header Files\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="SingletonDialog.h">
+      <Filter>Header Files\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Utility.h">
+      <Filter>Header Files\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="IconButton.h">
+      <Filter>Header Files\GUI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -231,6 +249,9 @@
     </None>
     <None Include="bin\Scripts\BuildIn\qt_module_wrapped.pyd">
       <Filter>PyScripts\BuildIn</Filter>
+    </None>
+    <None Include="bin\Scripts\Custom\Markov_Based_Detection.py">
+      <Filter>PyScripts\Custom</Filter>
     </None>
   </ItemGroup>
 </Project>

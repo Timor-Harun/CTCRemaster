@@ -42,6 +42,7 @@ Q_SIGNALS:
     void signal_ButtonClickEvent(const QString &objectName);
     void signal_EditFinished(const QString &objectName);
     void signal_CheckBoxStageChanged(const QString &objectName);
+    void signal_TableSelectedIndexChanged(const QString& objectName,int row);
 public:
     void doHorizontalLayout()
     {
@@ -134,6 +135,9 @@ public:
         table->setHeadTitle(headerLabels);
         table->setObjectName(objectName);
         layoutsStack.top()->addWidget(table);
+		connect(table, &WrappedTableWidget::itemSelectionChanged, this, [=]() {
+			emit signal_TableSelectedIndexChanged(objectName,table->getSelectedRowIndex());
+			});
         return table;
     }
 

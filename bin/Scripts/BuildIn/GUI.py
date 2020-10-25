@@ -255,52 +255,52 @@ class GUI(object):
     @staticmethod
     def InvokeButtonClickShot(objectName):
         info = GUI.UUIDToWidgetMap[GUI.CurrentWidgetUUID]
-        eventName = GUI.WidgetEventMap[info.widgetClassName].getEvent(objectName)[1]
-        if(not eventName):
+        eventInfo = GUI.WidgetEventMap[info.widgetClassName].getEvent(objectName)
+        if not eventInfo:
             return
+        eventName = eventInfo[1]
         function = getattr(info.ptr,eventName)
-        if(function != None):
-            function()
+        function()
 
     @staticmethod
     def InvokeEditFinishedShot(objectName):
         info = GUI.UUIDToWidgetMap[GUI.CurrentWidgetUUID]
-        eventName = GUI.WidgetEventMap[info.widgetClassName].getEvent(objectName)[1]
-        if(not eventName):
+        eventInfo = GUI.WidgetEventMap[info.widgetClassName].getEvent(objectName)
+        if not eventInfo:
             return
+        eventName = eventInfo[1]
         function = getattr(info.ptr,eventName)
-        if(function != None):
-            function()
+        function()
 
     @staticmethod
     def InvokeCheckStateChangedShot(objectName):
         info = GUI.UUIDToWidgetMap[GUI.CurrentWidgetUUID]
-        eventName = GUI.WidgetEventMap[info.widgetClassName].getEvent(objectName)[1]
-        if(not eventName):
+        eventInfo = GUI.WidgetEventMap[info.widgetClassName].getEvent(objectName)
+        if not eventInfo:
             return
+        eventName = eventInfo[1]
         function = getattr(info.ptr,eventName)
-        if(function != None):
-           function()
+        function()
 
     @staticmethod
     def InvokeComboBoxIndexChangedShot(objectName):
         info = GUI.UUIDToWidgetMap[GUI.CurrentWidgetUUID]
-        eventName = GUI.WidgetEventMap[info.widgetClassName].getEvent(objectName)[1]
-        if(not eventName):
+        eventInfo = GUI.WidgetEventMap[info.widgetClassName].getEvent(objectName)
+        if not eventInfo:
             return
+        eventName = eventInfo[1]
         function = getattr(info.ptr,eventName)
-        if(function != None):
-           function()
+        function()
 
     @staticmethod
-    def InvokeTableViewSelectionChangedShot(objectName):
+    def InvokeTableSelectedIndexShot(objectName,index):
         info = GUI.UUIDToWidgetMap[GUI.CurrentWidgetUUID]
-        eventName = GUI.WidgetEventMap[info.widgetClassName].getEvent(objectName)[1]
-        if(not eventName):
+        eventInfo = GUI.WidgetEventMap[info.widgetClassName].getEvent(objectName)
+        if not eventInfo:
             return
+        eventName = eventInfo[1]
         function = getattr(info.ptr,eventName)
-        if(function != None):
-           function()
+        function(index)
 
     @staticmethod
     def BeginGUI(ptr):
@@ -394,6 +394,11 @@ class GUI(object):
 
     class get():
         @staticmethod
+        def GetChecked(self,objectName):
+            handle = GUI.UUIDToWidgetMap[self.getUUID()].findHandle(objectName)
+            return handle.getChecked()
+
+        @staticmethod
         def GetProgressBarValue(self,objectName):
             handle = GUI.UUIDToWidgetMap[self.getUUID()].findHandle(objectName)
             return handle.getValue()
@@ -410,6 +415,12 @@ class GUI(object):
             handle = GUI.UUIDToWidgetMap[self.getUUID()].findHandle(objectName)
             return handle.getIP().stdstr()
 
+        @staticmethod
+        def GetTableRowCount(self,objectName):
+            ptr = GUI.UUIDToWidgetMap[self.getUUID()].ptr
+            handle = GUI.UUIDToWidgetMap[self.getUUID()].findHandle(objectName)
+            return handle.getRowCount()
+
     class modify():
         @staticmethod
         def AppendTableItem(self,objectName,item:list):
@@ -419,6 +430,21 @@ class GUI(object):
             for i in item:
                 vct.append(str(i))
             handle.appendRow(vct)
+            handle.updateItem()
+
+        @staticmethod
+        def SetTableItem(self,objectName,row,column,str):
+            ptr = GUI.UUIDToWidgetMap[self.getUUID()].ptr
+            handle = GUI.UUIDToWidgetMap[self.getUUID()].findHandle(objectName)
+            handle.setItem(row,column,str)
+            handle.updateItem()
+
+        @staticmethod
+        def ClearTable(self,objectName):
+            ptr = GUI.UUIDToWidgetMap[self.getUUID()].ptr
+            handle = GUI.UUIDToWidgetMap[self.getUUID()].findHandle(objectName)
+            handle.clear()
+
 if __name__ == "__main__":
     Debug.enabledDirectPrintMode()
     GUI.Button("123","23")

@@ -5,3 +5,29 @@ QMAKE_CXX.COMPILER_MACROS = \
     QT_COMPILER_STDCXX \
     QMAKE_MSC_VER \
     QMAKE_MSC_FULL_VER
+QMAKE_CXX.INCDIRS = \
+    D:\\ProgrammingLib\\Python\\include \
+    D:\\ProgrammingLib\\boost_1_74_0 \
+    F:\\ProgrammingLib\\QScintilla-2.11.5\\Qt4Qt5\\ \
+    D:\\software\\QScintilla-2.11.5\\Qt4Qt5 \
+    E:\\QScintilla-2.11.5\\Qt4Qt5 \
+    D:\\Software\\VS2019\\VC\\Tools\\MSVC\\14.27.29110\\include \
+    D:\\Software\\VS2019\\VC\\Tools\\MSVC\\14.27.29110\\atlmfc\\include \
+    D:\\Software\\VS2019\\VC\\Auxiliary\\VS\\include \
+    "D:\\Windows Kits\\10\\Include\\10.0.18362.0\\ucrt" \
+    D:\\Software\\VS2019\\VC\\Auxiliary\\VS\\UnitTest\\include \
+    "D:\\Windows Kits\\10\\Include\\10.0.18362.0\\um" \
+    "D:\\Windows Kits\\10\\Include\\10.0.18362.0\\shared" \
+    "D:\\Windows Kits\\10\\Include\\10.0.18362.0\\winrt" \
+    "D:\\Windows Kits\\10\\Include\\10.0.18362.0\\cppwinrt" \
+    Include\\um
+QMAKE_CXX.LIBDIRS = \
+    D:\\ProgrammingLib\\Python\\libs \
+    D:\\ProgrammingLib\\boost_1_74_0\\stage\\lib \
+    D:\\Software\\VS2019\\VC\\Tools\\MSVC\\14.27.29110\\lib\\x64 \
+    D:\\Software\\VS2019\\VC\\Tools\\MSVC\\14.27.29110\\atlmfc\\lib\\x64 \
+    D:\\Software\\VS2019\\VC\\Auxiliary\\VS\\lib\\x64 \
+    "D:\\Windows Kits\\10\\lib\\10.0.18362.0\\ucrt\\x64" \
+    D:\\Software\\VS2019\\VC\\Auxiliary\\VS\\UnitTest\\lib \
+    "D:\\Windows Kits\\10\\lib\\10.0.18362.0\\um\\x64" \
+    lib\\um\\x64
