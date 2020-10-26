@@ -43,15 +43,20 @@
     <Import Project="$(QtMsBuild)\qt_defaults.props" />
   </ImportGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
-    <IncludePath>$(PYTHON_INCLUDE);$(BOOST_INCLUDE);F:\ProgrammingLib\QScintilla-2.11.5\Qt4Qt5\;D:\software\QScintilla-2.11.5\Qt4Qt5;E:\QScintilla-2.11.5\Qt4Qt5;$(IncludePath)</IncludePath>
+    <IncludePath>$(PYTHON_INCLUDE);$(BOOST_INCLUDE);D:\ProgrammingLib\QScintilla-2.11.5\Qt4Qt5\;D:\software\QScintilla-2.11.5\Qt4Qt5;E:\QScintilla-2.11.5\Qt4Qt5;$(IncludePath)</IncludePath>
     <LibraryPath>$(PYTHON_LIB);$(BOOST_LIb);$(LibraryPath)</LibraryPath>
     <OutDir>bin\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
-    <IncludePath>$(PYTHON_INCLUDE);$(BOOST_INCLUDE);F:\ProgrammingLib\QScintilla-2.11.5\Qt4Qt5\;D:\software\QScintilla-2.11.5\Qt4Qt5;E:\QScintilla-2.11.5\Qt4Qt5;$(IncludePath)</IncludePath>
+    <IncludePath>$(PYTHON_INCLUDE);$(BOOST_INCLUDE);D:\ProgrammingLib\QScintilla-2.11.5\Qt4Qt5\;D:\software\QScintilla-2.11.5\Qt4Qt5;E:\QScintilla-2.11.5\Qt4Qt5;$(IncludePath)</IncludePath>
     <LibraryPath>$(PYTHON_LIB);$(BOOST_LIb);$(LibraryPath)</LibraryPath>
     <OutDir>bin\Release\</OutDir>
   </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Link>
+      <ProgramDatabaseFile>$(OutDir)Pdbs\$(TargetName).pdb</ProgramDatabaseFile>
+    </Link>
+  </ItemDefinitionGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="QtSettings">
     <QtInstall>5.14.0</QtInstall>
     <QtModules>charts;core;datavisualization;gui;widgets;xml</QtModules>
@@ -82,13 +87,13 @@
     <ClCompile>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <DebugInformationFormat>None</DebugInformationFormat>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <Optimization>MaxSpeed</Optimization>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
-      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>

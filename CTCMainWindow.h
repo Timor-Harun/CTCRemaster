@@ -16,6 +16,7 @@
 #include <QMenu>
 #include <QAction>
 #include <QTreeWidgetItem>
+
 #include "ui_CTCMainWindow.h"
 #include "PythonScriptSystem.h"
 #include "TitleBarWidget.h"
@@ -28,63 +29,7 @@ using namespace TimorHarun::Scripting;
 
 #define Python PythonScriptSystem::getInstance()
 
-class MenuItemNode
-{
-public:
-	MenuItemNode() :action(nullptr), menu(nullptr) {};
-	MenuItemNode(const QString &actionName, bool checkable) :action(new QAction(actionName)), isRoot(false) { action->setCheckable(checkable); }
-	MenuItemNode(const QString &menuName) :menu(new QMenu(menuName)), isRoot(true) { }
 
-	union
-	{
-		QAction* action;
-		QMenu* menu;
-	};
-
-	bool isRoot;
-	QList<MenuItemNode*> children;
-
-	bool containsChild(const QStringList& _val, MenuItemNode*& last, int* index) {
-		if (*index == _val.size())
-		{
-			return true;
-		}
-		last = this;
-		for (auto node : children)
-		{
-			if (!node->isRoot)
-			{
-				if (node->action->text() == _val[*index])
-				{
-					(*index)++;
-					return node->containsChild(_val, last, index);
-				}
-			}
-			else
-			{
-				if (node->menu->title() == _val[*index])
-				{
-					(*index)++;
-					return node->containsChild(_val, last, index);
-				}
-			}
-		}
-		return false;
-	}
-
-	MenuItemNode* addChild(const QString& actionName, bool checkable)
-	{
-		auto item = new MenuItemNode(actionName, checkable);
-		children.push_back(item);
-		return item;
-	}
-	MenuItemNode* addChild(const QString& actionName)
-	{
-		auto item = new MenuItemNode(actionName);
-		children.push_back(item);
-		return item;
-	}
-};
 class CTCMainWindow : public QMainWindow
 {
     Q_OBJECT

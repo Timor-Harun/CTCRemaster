@@ -8,7 +8,7 @@ QMAKE_CXX.COMPILER_MACROS = \
 QMAKE_CXX.INCDIRS = \
     D:\\ProgrammingLib\\Python\\include \
     D:\\ProgrammingLib\\boost_1_74_0 \
-    F:\\ProgrammingLib\\QScintilla-2.11.5\\Qt4Qt5\\ \
+    D:\\ProgrammingLib\\QScintilla-2.11.5\\Qt4Qt5\\ \
     D:\\software\\QScintilla-2.11.5\\Qt4Qt5 \
     E:\\QScintilla-2.11.5\\Qt4Qt5 \
     D:\\Software\\VS2019\\VC\\Tools\\MSVC\\14.27.29110\\include \

@@ -5,6 +5,8 @@ VisualStudioVersion = 16.0.30523.141
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CTCRemaster", "CTCRemaster.vcxproj", "{4CEE7D66-26AF-401B-8D2B-10C19BB98F9D}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "QtUIWrapperModule", "..\..\QtUIWrapperModule\QtUIWrapperModule.vcxproj", "{0510DB98-F1B5-4DCF-B751-DE2D7D35171D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -15,6 +17,10 @@ Global
 		{4CEE7D66-26AF-401B-8D2B-10C19BB98F9D}.Debug|x64.Build.0 = Debug|x64
 		{4CEE7D66-26AF-401B-8D2B-10C19BB98F9D}.Release|x64.ActiveCfg = Release|x64
 		{4CEE7D66-26AF-401B-8D2B-10C19BB98F9D}.Release|x64.Build.0 = Release|x64
+		{0510DB98-F1B5-4DCF-B751-DE2D7D35171D}.Debug|x64.ActiveCfg = Debug|x64
+		{0510DB98-F1B5-4DCF-B751-DE2D7D35171D}.Debug|x64.Build.0 = Debug|x64
+		{0510DB98-F1B5-4DCF-B751-DE2D7D35171D}.Release|x64.ActiveCfg = Release|x64
+		{0510DB98-F1B5-4DCF-B751-DE2D7D35171D}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

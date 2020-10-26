@@ -4,6 +4,7 @@ import qt_module_wrapped
 from plt import plt
 from Debug import Debug
 import csv
+
 class Markov_Based_Detection(Widget):
 	def __init__(self):
 		pass

@@ -1,13 +1,17 @@
-from abc import ABC,abstractmethod
+#GUI 系统的实现
+
+########## Build-In ###########
 import functools
 import win32gui,win32con
 import win32api
 import uuid
 import os
 import sys
-from Debug import Debug
+from abc import ABC,abstractmethod
+
+########## Custom ###########
+from Debug import *
 from GUIUtility import GUIUtility
-import qt_module_wrapped
 
 # 窗口类型 定义
 class WidgetType():
@@ -444,10 +448,3 @@ class GUI(object):
             ptr = GUI.UUIDToWidgetMap[self.getUUID()].ptr
             handle = GUI.UUIDToWidgetMap[self.getUUID()].findHandle(objectName)
             handle.clear()
-
-if __name__ == "__main__":
-    Debug.enabledDirectPrintMode()
-    GUI.Button("123","23")
-    GUI.Button("345","236")
-    GUI.Label("123","45")
-    Debug.disabledDirectPrintMode()

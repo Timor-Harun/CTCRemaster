@@ -260,6 +260,11 @@ PythonScriptSystem* PythonScriptSystem::getInstance()
 
 bool PythonScriptSystem::doInitBuildIn()
 {
+	/********* Debug ********/
+	_module_impl_(Debug);
+	_bind_pfn_(Debug, injectPoolPtr);
+	m_PFN_injectPoolPtr(boost::shared_ptr<ConsoleMessagePool>(Console->getPoolPtr()));
+
 	/********* GUI ********/
 	_module_impl_(GUI);
 	_bind_pfn_(GUI, GetUIElementsJsonString);
@@ -270,17 +275,13 @@ bool PythonScriptSystem::doInitBuildIn()
 	_bind_pfn_(GUI, InvokeEditFinishedShot);
 	_bind_pfn_(GUI, InvokeCheckStateChangedShot);
 	_bind_pfn_(GUI, InvokeTableSelectedIndexShot);
-	/********* Debug ********/
+
+	/********* Menu ********/
 	_module_impl_(MenuManager);
 	_bind_pfn_(MenuManager, InsertMenuItem);
 	_bind_pfn_(MenuManager, GetFunction);
 	_bind_pfn_(MenuManager, ClearMenuItem);
 	_bind_pfn_(MenuManager, GetMenuItemInfo);
-
-	/********* Debug ********/
-	_module_impl_(Debug);
-	_bind_pfn_(Debug, injectPoolPtr);
-	m_PFN_injectPoolPtr(boost::shared_ptr<ConsoleMessagePool>(Console->getPoolPtr()));
 
 	/********* Plt ********/
 	_module_impl_(plt);
@@ -298,7 +299,6 @@ bool PythonScriptSystem::doStartUp()
 
 	m_main_module = object((handle<>(boost::python::borrowed(PyImport_AddModule("__main__")))));
 	m_main_namespace = m_main_module.attr("__dict__");
-
 	PyRun_SimpleString("import sys");
 	PyRun_SimpleString("import traceback");
 
