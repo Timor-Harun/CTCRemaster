@@ -57,7 +57,7 @@ class testWidget(Widget):
     def OnEdit_Finished(self):
         GUIUtility.MessageBox("editing finished","text = {}".format(GUI.GetLineEditText("testEdit")))
 
-    @GUI.Slot(receiver = "testCheckBox",eventType = EventType.CheckState_Changed)
+    @GUI.Slot(receiver = "testCheckBox",eventType = EventType.CheckBox_State_Changed)
     def OnCheckState_Changed(self):
         GUI.set.SetLineEditText(self,"testEdit","testCheckBox changed!")
 

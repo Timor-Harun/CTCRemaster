@@ -162,7 +162,7 @@ class IPCTC(Widget):
     def OnClick_button_Send(self):
         self.ipctc.run()
         
-    @GUI.Slot(receiver = "check_turn",eventType = EventType.CheckState_Changed)
+    @GUI.Slot(receiver = "check_turn",eventType = EventType.CheckBox_State_Changed)
     def OnCheckStateChanged_check_turn(self):
         checked = GUI.get.GetChecked(self,"check_turn")
         GUI.set.SetControlEnabled(self,"edit_period",checked)

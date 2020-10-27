@@ -38,42 +38,42 @@ WrappedWidget* PythonScriptSystem::doGetWidgetCreation(const QString &fileName)
 							{
 								QJsonArray _array = array[i].toArray();
 								int typeCode = _array[0].toInt();
-								if (typeCode == 0)
+								if (typeCode == WindowCommandType::Button)
 								{
 									QString objectName = _array[1].toString();
 									QString objectText = _array[2].toString();
 									QPushButton* btn = widget->doButton(objectName, objectText);
 									call_method<void>(infoHandle.get(), "addHandle", objectName.toStdString(), typeCode, boost::shared_ptr<QPushButton>(btn));
 								}
-								else if (typeCode == 1)
+								else if (typeCode == WindowCommandType::Label)
 								{
 									QString text = _array[1].toString();
 									QLabel* label = widget->doLabel(text);
 								}
-								else if (typeCode == 2)
+								else if (typeCode == WindowCommandType::LineEdit)
 								{
 									QString objectName = _array[1].toString();
 									QLineEdit* edit = widget->doLineEdit(objectName);
 									call_method<void>(infoHandle.get(), "addHandle", objectName.toStdString(), typeCode, boost::shared_ptr<QLineEdit>(edit));
 								}
-								else if (typeCode == 3)
+								else if (typeCode == WindowCommandType::Spacer)
 								{
 									int spacing = _array[1].toInt();
 									widget->doSpacer(spacing);
 								}
-								else if (typeCode == 4)
+								else if (typeCode == WindowCommandType::HLayout)
 								{
 									widget->doHorizontalLayout();
 								}
-								else if (typeCode == 5)
+								else if (typeCode == WindowCommandType::VLayout)
 								{
 									widget->doVerticalLayout();
 								}
-								else if (typeCode == 6)
+								else if (typeCode == WindowCommandType::EndLayout)
 								{
 									widget->endLayout();
 								}
-								else if (typeCode == 7)
+								else if (typeCode == WindowCommandType::CheckBox)
 								{
 									QString objectName = _array[1].toString();
 									QString objectText = _array[2].toString();
@@ -81,7 +81,7 @@ WrappedWidget* PythonScriptSystem::doGetWidgetCreation(const QString &fileName)
 									QCheckBox* checkBox = widget->doCheckBox(objectName, objectText, checked);
 									call_method<void>(infoHandle.get(), "addHandle", objectName.toStdString(), typeCode, boost::shared_ptr<QCheckBox>(checkBox));
 								}
-								else if (typeCode == 8)
+								else if (typeCode == WindowCommandType::ProgressBar)
 								{
 									QString objectName = _array[1].toString();
 									int value = _array[2].toInt();
@@ -91,22 +91,22 @@ WrappedWidget* PythonScriptSystem::doGetWidgetCreation(const QString &fileName)
 									connect(progressBar, &WrappedProgressBar::updateValue_signal, progressBar, &WrappedProgressBar::setValue);
 									call_method<void>(infoHandle.get(), "addHandle", objectName.toStdString(), typeCode, boost::shared_ptr<WrappedProgressBar>(progressBar));
 								}
-								else if (typeCode == 9)
+								else if (typeCode == WindowCommandType::BeginGroup)
 								{
 									QString groupName = _array[1].toString();
 									widget->doGroupBox(groupName);
 								}
-								else if (typeCode == 10)
+								else if (typeCode == WindowCommandType::EndGroup)
 								{
 									widget->endGroupBox();
 								}
-								else if (typeCode == 11)
+								else if (typeCode == WindowCommandType::IPAddressEdit)
 								{
 									QString objectName = _array[1].toString();
 									IPAddress* ipAddress = widget->doIPAddress(objectName);
 									call_method<void>(infoHandle.get(), "addHandle", objectName.toStdString(), typeCode, boost::shared_ptr<IPAddress>(ipAddress));
 								}
-								else if (typeCode == 12)
+								else if (typeCode == WindowCommandType::ComboBox)
 								{
 									QString objectName = _array[1].toString();
 									QStringList items;
@@ -118,7 +118,7 @@ WrappedWidget* PythonScriptSystem::doGetWidgetCreation(const QString &fileName)
 									QComboBox* comboBox = widget->doComboBox(objectName, items);
 									call_method<void>(infoHandle.get(), "addHandle", objectName.toStdString(), typeCode, boost::shared_ptr<QComboBox>(comboBox));
 								}
-								else if (typeCode == 13)
+								else if (typeCode == WindowCommandType::TableView)
 								{
 									 QString objectName = _array[1].toString();
 									 QStringList headers;
@@ -129,6 +129,50 @@ WrappedWidget* PythonScriptSystem::doGetWidgetCreation(const QString &fileName)
 									 }
 									 WrappedTableWidget* table = widget->doTable(objectName, headers);
 									 call_method<void>(infoHandle.get(), "addHandle", objectName.toStdString(), typeCode, boost::shared_ptr<WrappedTableWidget>(table));
+								}
+								else if (typeCode == WindowCommandType::SpinBox)
+								{
+									QString objectName = _array[1].toString();
+									int min = _array[2].toInt();
+									int max = _array[3].toInt();
+									int step = _array[4].toInt();
+									QSpinBox* spinBox = widget->doSpinBox(objectName, min, max, step);
+									call_method<void>(infoHandle.get(), "addHandle", objectName.toStdString(), typeCode, boost::shared_ptr<QSpinBox>(spinBox));
+								}
+								else if (typeCode == WindowCommandType::DoubleSpinBox)
+								{
+									QString objectName = _array[1].toString();
+									double min = _array[2].toDouble();
+									double max = _array[3].toDouble();
+									double step = _array[4].toDouble();
+									QDoubleSpinBox* spinBox = widget->doDoubleSpinBox(objectName, min, max, step);
+									call_method<void>(infoHandle.get(), "addHandle", objectName.toStdString(), typeCode, boost::shared_ptr<QDoubleSpinBox>(spinBox));
+								}
+								else if (typeCode == WindowCommandType::FontComboBox)
+								{
+									Console->printWarning(called_info, "doFontComboBox is not implement");
+								}
+								else if (typeCode == WindowCommandType::PlainTextEdit)
+								{
+									QString objectName = _array[1].toString();
+									QPlainTextEdit* edit = widget->doPlainTextEdit(objectName);
+									call_method<void>(infoHandle.get(), "addHandle", objectName.toStdString(), typeCode, boost::shared_ptr<QPlainTextEdit>(edit));
+								}
+								else if (typeCode == WindowCommandType::ButtonGroup)
+								{
+									QString objectName = _array[1].toString();
+									QJsonArray array_textList = _array[2].toArray();
+									QJsonArray array_imageList = _array[3].toArray();
+
+									QStringList textList;
+									QStringList imageList;
+
+									for (auto& object : array_textList) { textList.append(object.toString()); }
+
+									for (auto& object : array_imageList) { imageList.append(object.toString()); }
+
+									QButtonGroup* buttonGroup = widget->doButtonGroup(objectName, textList, imageList);
+									call_method<void>(infoHandle.get(), "addHandle", objectName.toStdString(), typeCode, boost::shared_ptr<QButtonGroup>(buttonGroup));
 								}
 							}
 						}

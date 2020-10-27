@@ -19,7 +19,12 @@
 #include <QJsonObject>
 #include <QJsonArray>
 #include <QDebug>
-
+#include <QPlainTextEdit>
+#include <QButtonGroup>
+#include <QRadioButton>
+#include <QSpinBox>
+#include <QDoubleSpinBox>
+#include <QFontComboBox>
 #include "WrappedProgressBar.h"
 #include "IPAddress.h"
 #include "WrappedTableWidget.h"
@@ -43,146 +48,95 @@ Q_SIGNALS:
     void signal_EditFinished(const QString &objectName);
     void signal_CheckBoxStageChanged(const QString &objectName);
     void signal_TableSelectedIndexChanged(const QString& objectName,int row);
+    void signal_SpinBoxValueChanged(const QString& objectName, int value);
+    void signal_ButtonGroupToggled(const QString& objectName, int index,bool value);
 public:
-    void doHorizontalLayout()
-    {
-        QWidget* widget = new QWidget;
-        QHBoxLayout* hLayout = new QHBoxLayout(widget);
-        widget->setLayout(hLayout);
-        layoutsStack.push(hLayout);
-    }
+    void setUUID(const QString& uuid);
 
-    void doVerticalLayout()
-    {
-        QWidget* widget = new QWidget;
-        QVBoxLayout* vLayout = new QVBoxLayout(widget);
-        widget->setLayout(vLayout);
+    QString getUUID();
 
-        layoutsStack.push(vLayout);
-    }
+    void doHorizontalLayout();
 
-    QPushButton* doButton(const QString&objectName, const QString &buttonText)
-    {
-        QPushButton* button = new QPushButton;
-        button->setObjectName(objectName);
-        objectNamesSets.insert(objectName);
+    void doVerticalLayout();
 
-        button->setText(buttonText);
-        connect(button, &QPushButton::clicked, this, [=]() {
-            const QString &objectName = QObject::sender()->objectName();
-            emit signal_ButtonClickEvent(objectName);
-            });
+    QPushButton* doButton(const QString& objectName, const QString& buttonText);
 
-        layoutsStack.top()->addWidget(button);
-        return button;
-    }
-    void setUUID(const QString&uuid)
-    {
-        this->uuid = uuid;
-    }
-    const QString &getUUID()
-    {
-        return this->uuid;
-    }
+    QLineEdit* doLineEdit(const QString& objectName);
 
-    QLineEdit* doLineEdit(const QString&objectName)
-    {
-        QLineEdit* lineEdit = new QLineEdit;
-        connect(lineEdit, &QLineEdit::editingFinished, this, [=]() {emit signal_EditFinished(objectName); });
-        layoutsStack.top()->addWidget(lineEdit);
-        return lineEdit;
-    }
+    void doSpacer(int spacing);
 
-    void doSpacer(int spacing)
-    {
-        ((QBoxLayout*)(layoutsStack.top()))->addSpacing(spacing);
-    }
+    QComboBox* doComboBox(const QString& objectName, const QStringList& items);
 
-    QComboBox* doComboBox(const QString&objectName, const QStringList &items)
+    QCheckBox* doCheckBox(const QString& objectName, const QString& objectText, bool checked);
+
+    WrappedProgressBar* doProgressBar(const QString& objectName, int value, int min, int max);
+
+    WrappedTableWidget* doTable(const QString& objectName, const QStringList& headerLabels);
+
+    IPAddress* doIPAddress(const QString& objectName);
+
+    QLabel* doLabel(const QString& text);
+
+    void doGroupBox(const QString& title);
+
+    void endGroupBox();
+
+    void endLayout();
+
+    void doTab();
+
+    void endTab();
+    
+    QSpinBox* doSpinBox(const QString& objectName, int min,int max,int step)
     {
-        QComboBox* box = new QComboBox;
+        QSpinBox* box = new QSpinBox;
         box->setObjectName(objectName);
-        box->addItems(items);
-        return box;
+        box->setRange(min, max);
+        box->setSingleStep(step);
+		return box;
     }
 
-    QCheckBox* doCheckBox(const QString&objectName, const QString&objectText, bool checked)
+	QDoubleSpinBox* doDoubleSpinBox(const QString& objectName, double min, double max, double step)
+	{
+        QDoubleSpinBox* box = new QDoubleSpinBox;
+		box->setObjectName(objectName);
+		box->setRange(min, max);
+		box->setSingleStep(step);
+		return box;
+	}
+
+    QButtonGroup* doButtonGroup(const QString& objectName, const QStringList& textList, const QStringList& imageList)
     {
-        QCheckBox* checkBox = new QCheckBox;
-        checkBox->setObjectName(objectName);
-        checkBox->setText(objectText);
-        checkBox->setChecked(checked);
+        QButtonGroup* buttonGroup = new QButtonGroup;
+        buttonGroup->setExclusive(true);
+        buttonGroup->setObjectName(objectName);
+		objectNamesSets.insert(objectName);
 
-        connect(checkBox, &QCheckBox::toggled, this, [=]() {emit signal_CheckBoxStageChanged(objectName); });
-        layoutsStack.top()->addWidget(checkBox);
+        int size = textList.size();
 
-        return checkBox;
-    }
-
-    WrappedProgressBar* doProgressBar(const QString&objectName, int value, int min, int max)
-    {
-        WrappedProgressBar* progressBar = new WrappedProgressBar;
-        progressBar->setObjectName(objectName);
-        progressBar->setRange(min, max);
-        progressBar->setValue(value);
-        layoutsStack.top()->addWidget(progressBar);
-        return progressBar;
-    }
-
-    WrappedTableWidget* doTable(const QString& objectName,const QStringList &headerLabels) 
-    {
-        WrappedTableWidget* table = new WrappedTableWidget;
-        table->setHeadTitle(headerLabels);
-        table->setObjectName(objectName);
-        layoutsStack.top()->addWidget(table);
-		connect(table, &WrappedTableWidget::itemSelectionChanged, this, [=]() {
-			emit signal_TableSelectedIndexChanged(objectName,table->getSelectedRowIndex());
+        for (int i = 0; i < size; i++)
+        {
+            QRadioButton* radioButton = new QRadioButton;
+            if (i < imageList.size())
+            {
+                radioButton->setIcon(QIcon(imageList[0]));
+            }
+            radioButton->setText(textList[i]);
+            buttonGroup->addButton(radioButton);
+            layoutsStack.top()->addWidget(radioButton);
+        }
+		connect(buttonGroup, (void (QButtonGroup::*)(int,bool))&QButtonGroup::buttonToggled, this, [=](int index,bool value) {
+			const QString& objectName = QObject::sender()->objectName();
+            emit signal_ButtonGroupToggled(objectName, index, value);
 			});
-        return table;
+        return buttonGroup;
     }
 
-    IPAddress* doIPAddress(const QString&objectName)
+    QPlainTextEdit* doPlainTextEdit(const QString& objectName)
     {
-        IPAddress* address = new IPAddress;
-        address->setObjectName(objectName);
-
-        layoutsStack.top()->addWidget(address);
-        return address;
-    }
-    void doGroupBox(const QString&title)
-    {
-        QGroupBox* groupBox = new QGroupBox(title);
-        groupBox->setLayout(new QGridLayout);
-        layoutsStack.top()->addWidget(groupBox);
-        layoutsStack.push(groupBox->layout());
-    }
-
-    void endGroupBox()
-    {
-        layoutsStack.pop();
-    }
-
-    QLabel* doLabel(const QString &text)
-    {
-        QLabel* label = new QLabel(text);
-
-        layoutsStack.top()->addWidget(label);
-        return label;
-    }
-    void endLayout()
-    {
-        QLayout* layout = layoutsStack.top();
-        layoutsStack.pop();
-        QWidget* widget = qobject_cast<QWidget*>(layout->parent());
-        layoutsStack.top()->addWidget(widget);
-    }
-
-    void doTab()
-    {
-
-    }
-    void endTab()
-    {
-
+        QPlainTextEdit* edit = new QPlainTextEdit;
+		connect(edit, &QPlainTextEdit::textChanged, this, [=]() {emit signal_EditFinished(objectName); });
+		layoutsStack.top()->addWidget(edit);
+		return edit;
     }
 };

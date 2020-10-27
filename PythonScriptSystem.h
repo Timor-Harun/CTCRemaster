@@ -50,6 +50,28 @@ class PythonScriptSystem:public QObject
 	Q_OBJECT
 
 private:
+	enum WindowCommandType
+	{
+		Button = 0x00001,
+		Label = 0x00002,
+		LineEdit = 0x00004,
+		Spacer = 0x00008,
+		HLayout = 0x00010,
+		VLayout = 0x00020,
+		EndLayout = 0x00040,
+		CheckBox = 0x00080,
+		ProgressBar = 0x00100,
+		BeginGroup = 0x00200,
+		EndGroup = 0x00400,
+		IPAddressEdit = 0x00800,
+		ComboBox = 0x01000,
+		TableView = 0x02000,
+		SpinBox = 0x04000,
+		DoubleSpinBox = 0x08000,
+		PlainTextEdit = 0x10000,
+		FontComboBox = 0x20000,
+		ButtonGroup = 0x40000
+	};
 	/*******Main Object*******/
 	object m_main_module;
 	object m_main_namespace;

@@ -15,29 +15,39 @@ from GUIUtility import GUIUtility
 
 # 窗口类型 定义
 class WidgetType():
-     Button = 0
-     Label = 1
-     LineEdit = 2
-     Spacer = 3
-     HLayout = 4
-     VLayout = 5
-     EndLayout = 6
-     CheckBox = 7
-     ProgressBar = 8
-     BeginGroup = 9
-     EndGroup = 10
-     IPAddress = 11
-     ComboBox = 12
-     TableView = 13
+    Button		      = 0x0000001
+    Label		      = 0x0000002
+    LineEdit	      = 0x0000004
+    Spacer		      = 0x0000008
+    HLayout		      = 0x0000010
+    VLayout           = 0x0000020
+    EndLayout         = 0x0000040
+    CheckBox          = 0x0000080
+    ProgressBar       = 0x0000100
+    BeginGroup        = 0x0000200
+    EndGroup          = 0x0000400
+    IPAddressEdit     = 0x0000800
+    ComboBox          = 0x0001000
+    TableView         = 0x0002000
+    SpinBox           = 0x0004000
+    DoubleSpinBox     = 0x0008000
+    PlainTextEdit     = 0x0010000
+    FontComboBox      = 0x0020000
+    BeginButtonGroup  = 0x0040000
+    EndButtonGroup    = 0x0080000
+    SubButton         = 0x0100000
+    BeginTab          = 0x0200000
+    SubTab            = 0x0400000
+    EndTab            = 0x0800000
 
 # 事件 类型 定义
 class EventType():
-     Button_Click = 0
-     Edit_Finished = 1
-     CheckState_Changed = 2
-     ComboBox_Index_Changed = 3
-     TableView_Selection_Chanced = 4
-
+    Button_Click = 0
+    Edit_Finished = 1
+    CheckBox_State_Changed = 2
+    ComboBox_Index_Changed = 3
+    TableView_Selection_Chanced = 4
+    RadioGroup_Toggled_Index_Changed = 5
 
 # C++调用类
 # 窗口信息，包含了窗口的类型名称，窗口及其控件的句柄
@@ -117,7 +127,7 @@ class WidgetCommandBuilder():
         self.commands.append([WidgetType.EndGroup])
 
     def doIPAddress(self,objectName):
-        self.commands.append([WidgetType.IPAddress,objectName])
+        self.commands.append([WidgetType.IPAddressEdit,objectName])
 
     def doSpacing(self,spacing):
         self.commands.append([WidgetType.Spacer,spacing])
@@ -127,6 +137,36 @@ class WidgetCommandBuilder():
 
     def doTable(self,objectName:str,header:list):
         self.commands.append([WidgetType.TableView,objectName,header])
+
+    def doBeginTab(self,objectName):
+        pass
+
+    def doBeginSubTab(self,tabName):
+        pass
+
+    def doEndSubTab(self):
+        pass
+
+    def doEndTab(self):
+        pass
+
+    def doPlainTextEdit(self,objectName):
+        pass
+
+    def doSpinBox(self,objectName,min,max,step):
+        pass
+
+    def doDoubleSpinBox(self,objectName,min,max,step):
+        pass 
+
+    def doBeginButtonGroup(self,objectName):
+        pass
+
+    def doEndButtonGroup(self):
+        pass
+
+    def doSubButton(self,objectName):
+        pass
 
     def getJsonResult(self):
         if self.jsonStr != None:
