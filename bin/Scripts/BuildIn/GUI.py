@@ -37,8 +37,9 @@ class WidgetType():
     EndButtonGroup    = 0x0080000
     SubButton         = 0x0100000
     BeginTab          = 0x0200000
-    SubTab            = 0x0400000
-    EndTab            = 0x0800000
+    BeginSubTab       = 0x0400000
+    EndSubTab         = 0x0800000
+    EndTab            = 0x1000000
 
 # 事件 类型 定义
 class EventType():
@@ -58,6 +59,10 @@ class WidgetInfo(object):
         self.widgetClassName = widgetClassName
         self.handleMap = {}
         self.ptr = ptr
+
+    #添加窗口的句柄
+    def addWidgetHandle(self,handlePtr):
+        self.widgetPtr = handlePtr
 
     # 添加句柄，参数为句柄对象名，句柄指针
     def addHandle(self,handleName,handleType,handlePtr):
@@ -178,11 +183,27 @@ class WidgetCommandBuilder():
 
 # 所有窗口的基类
 class Widget(ABC):
-    def __init__(self):
-        self.UUID = 0
+    def __init__(self,tabMode = True,dialogMode = False):
+        self.__UUID = 0
+        self.__tabMode = tabMode
+        self.__dialogMode = dialogMode
+
+    def isTabMode(self):
+        #import inspect
+        #GUIUtility.MessageBox('printStack',str(inspect.stack()))
+        return self.__tabMode
+
+    def isDialogMode(self):
+        return self.__dialogMode
+
+    def __setUUID(self,uuid):
+        if(self.__UUID!=0):
+            raise Exception("无法设置Widget UUID")
+        else:
+            self.__UUID = uuid
 
     def getUUID(self):
-        return self.UUID
+        return self.__UUID
 
     @abstractmethod
     def OnGUI(self):
@@ -199,6 +220,7 @@ class Widget(ABC):
 class GUI(object):
 
     # C++ 扫描 py文件时候调用
+    __dialogExecutor = None
 
     #当前扫描的类
     CurrentWidgetClassName = None
@@ -228,6 +250,10 @@ class GUI(object):
                 return
             func(*args,**kwarg)
         return wrapper
+
+    @staticmethod
+    def SetDialogExecutorPtr(ptr):
+        GUI.__dialogExecutor = ptr
 
     @staticmethod
     @RequireGUIBegin
@@ -347,15 +373,23 @@ class GUI(object):
         function(index)
 
     @staticmethod
+    def DisplayDialog(dialogName):
+        index = GUI.__dialogExecutor.getDialogIndex(dialogName)
+        if index<0:
+            Debug.printError("Can not exec Dialog:"+dialogName)
+        else:
+            GUI.__dialogExecutor.exec(index)
+
+    @staticmethod
     def BeginGUI(ptr):
         #生成 当前窗口的 UUID
-        ptr.UUID = str(uuid.uuid1())
+        ptr._Widget__setUUID(str(uuid.uuid1()))
         #设置当前的 指针
         GUI.CurrentWidgetPtr = ptr
         #获取窗口类名
         className = GUI.CurrentWidgetPtr.__class__.__name__
         GUI.CurrentWidgetCommands = WidgetCommandBuilder()
-        GUI.CurrentWidgetInfo = GUI.UUIDToWidgetMap[ptr.UUID] = WidgetInfo(ptr,className)
+        GUI.CurrentWidgetInfo = GUI.UUIDToWidgetMap[ptr.getUUID()] = WidgetInfo(ptr,className)
 
     @staticmethod
     def EndGUI():
@@ -395,6 +429,22 @@ class GUI(object):
         return GUI.CurrentWidgetInfo
 
     class set():
+        @staticmethod
+        def WindowTitle(self,titleStr:str):
+            handle = GUI.UUIDToWidgetMap[self.getUUID()].widgetPtr
+            if not handle:
+                Debug.printError("widget handle not found")
+            else:
+                handle.setTitle(qt_module_wrapped.qstr(titleStr))
+
+        @staticmethod
+        def WindowIcon(self,iconPath:str):
+            handle = GUI.UUIDToWidgetMap[self.getUUID()].widgetPtr
+            if not handle:
+                Debug.printError("widget handle not found")
+            else:
+                handle.setIcon(qt_module_wrapped.qicon_class(qt_module_wrapped.qstr(iconPath)))
+
         @staticmethod
         def SetStyleSheet(self,objectName,qssStr):
             handle = GUI.UUIDToWidgetMap[self.getUUID()].findHandle(objectName)

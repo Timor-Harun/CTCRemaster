@@ -23,13 +23,17 @@
 #include "Global.h"
 #include "ConsoleLogic.h"
 #include "PlotManager.h"
-#define BIND_PFN(className,function) m_PFN_##function = object((handle<>(borrowed(PyRun_String(#className"."#function, Py_eval_input, m_main_namespace.ptr(), m_main_namespace.ptr())))));
+#include "DialogExecutor.h"
+
 #define _bind_pfn_(className,function) m_PFN_##function = object((handle<>(borrowed(PyRun_String(#className"."#function, Py_eval_input, dict_##className.ptr(),  dict_##className.ptr())))));
+#define _bind_private_value_(className,valueName,value) dict_##className[(std::string()+"_"+#className+"__"+valueName).c_str()] = value
 
 #define _module_declare_(module) 	\
                 boost::python::object module_##module;  \
                 boost::python::object dict_##module;\
                 public:  boost::python::object get##module##Dict() {return this->dict_##module ;}
+
+#define _module_dict_(module) dict_##module
 
 #define _module_impl_(module) 	\
                 module_##module = boost::python::import(#module);  \
@@ -40,6 +44,11 @@
 
 #define py_try_begin_safe PyGILState_STATE lock = PyGILState_Ensure();bool expcetionFlag = false;QString errorStr;try
 #define py_try_end_safe   catch(boost::python::error_already_set &e) { errorStr = PythonScriptSystem::getInstance()->getLastErrorString(); expcetionFlag = true;} {PyGILState_Release(lock);if(expcetionFlag){QMessageBox::critical(NULL,"Python Fatal Error",errorStr);}}
+
+#define _is_class_(className,expectedClass) ::strcmp(instType ,#expectedClass) == 0 
+
+#define _is_class_widget_(className) _is_class_(className,Widget)
+#define _is_class_menu_(className) _is_class_(className,Menu)
 
 using namespace std;
 using namespace boost::python;
@@ -52,26 +61,27 @@ class PythonScriptSystem:public QObject
 private:
 	enum WindowCommandType
 	{
-		Button = 0x00001,
-		Label = 0x00002,
-		LineEdit = 0x00004,
-		Spacer = 0x00008,
-		HLayout = 0x00010,
-		VLayout = 0x00020,
-		EndLayout = 0x00040,
-		CheckBox = 0x00080,
-		ProgressBar = 0x00100,
-		BeginGroup = 0x00200,
-		EndGroup = 0x00400,
+		Button        = 0x00001,
+		Label         = 0x00002,
+		LineEdit      = 0x00004,
+		Spacer        = 0x00008,
+		HLayout       = 0x00010,
+		VLayout		  = 0x00020,
+		EndLayout     = 0x00040,
+		CheckBox      = 0x00080,
+		ProgressBar   = 0x00100,
+		BeginGroup    = 0x00200,
+		EndGroup      = 0x00400,
 		IPAddressEdit = 0x00800,
-		ComboBox = 0x01000,
-		TableView = 0x02000,
-		SpinBox = 0x04000,
+		ComboBox      = 0x01000,
+		TableView     = 0x02000,
+		SpinBox       = 0x04000,
 		DoubleSpinBox = 0x08000,
 		PlainTextEdit = 0x10000,
-		FontComboBox = 0x20000,
-		ButtonGroup = 0x40000
+		FontComboBox  = 0x20000,
+		ButtonGroup   = 0x40000
 	};
+
 	/*******Main Object*******/
 	object m_main_module;
 	object m_main_namespace;
@@ -85,6 +95,7 @@ private:
 	object m_PFN_InvokeEditFinishedShot;
 	object m_PFN_InvokeCheckStateChangedShot;
 	object m_PFN_InvokeTableSelectedIndexShot;
+	object m_PFN_SetDialogExecutorPtr;
 
 	/*******Menu PFN*******/
 	object m_PFN_InsertMenuItem;
@@ -94,6 +105,7 @@ private:
 
 	/*******Plt PFN*******/
 	object m_PFN_SetPlotManagerPtr;
+
 	/***********Debug 部分***********/
 
 	//可调用的方法injectPoolPtr，注入ConsoleMessagePool的指针
@@ -111,7 +123,8 @@ private:
 	_module_declare_(plt);
 
 	/*******File List*******/
-	QList<QString> m_widgetPythonFiles;
+	QList<QString> m_tabModeWidgetPythonFiles;
+
 	QList<QString> m_menuPythonFiles;
 
 	/*******Private Method*******/
@@ -127,11 +140,12 @@ private:
 
 public:
 	/*******  获取 窗口信息, 解析 并创建窗口，返回窗口的 Widget *******/
-	WrappedWidget* doGetWidgetCreation(const QString &fileName);
+	WrappedWidget* doGetWidgetCreation(const QString &fileName,bool isDialogMode = false);
 
 	~PythonScriptSystem();
 	static PythonScriptSystem* getInstance();
 
+	/******* 初始化子系统 *******/
 	bool doStartUp();
 
 	/*******  关闭子系统 *******/

@@ -101,6 +101,12 @@
     <ClCompile Include="ConsoleLogic.cpp" />
     <ClCompile Include="ConsoleMessageItemWidget.cpp" />
     <ClCompile Include="ConsoleMessagePool.cpp" />
+    <ClCompile Include="DialogExecutor.cpp">
+      <DynamicSource Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">input</DynamicSource>
+      <QtMocFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(Filename).moc</QtMocFileName>
+      <DynamicSource Condition="'$(Configuration)|$(Platform)'=='Release|x64'">input</DynamicSource>
+      <QtMocFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(Filename).moc</QtMocFileName>
+    </ClCompile>
     <ClCompile Include="DockTabBar.cpp" />
     <ClCompile Include="DockTabWidget.cpp" />
     <ClCompile Include="IconButton.cpp" />
@@ -135,6 +141,7 @@
     <ClInclude Include="ConsoleMessageItemWidget.h" />
     <QtMoc Include="IPAddress.h" />
     <ClInclude Include="ConsoleMessagePool.h" />
+    <QtMoc Include="DialogExecutor.h" />
     <ClInclude Include="IconButton.h" />
     <ClInclude Include="PlotManager.h" />
     <ClInclude Include="PlotWindow.h" />
@@ -165,6 +172,7 @@
     <None Include="bin\Scripts\Custom\JitterBug.py" />
     <None Include="bin\Scripts\Custom\Markov_Based_Detection.py" />
     <None Include="bin\Scripts\Custom\Server.py" />
+    <None Include="bin\Scripts\Custom\SettingDialog.py" />
     <None Include="bin\Scripts\Custom\testMenu.py" />
     <None Include="bin\Scripts\Custom\testWidget.py" />
     <None Include="bin\Scripts\Test\test.py" />

@@ -7,7 +7,7 @@ import csv
 
 class Markov_Based_Detection(Widget):
 	def __init__(self):
-		pass
+		super().__init__()
 
 	def OnGUI(self):
 		GUI.BeginGUI(self)

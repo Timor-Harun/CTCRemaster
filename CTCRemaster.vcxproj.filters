@@ -134,6 +134,9 @@
     <ClCompile Include="PlotWindow.cpp">
       <Filter>Source Files\GUI</Filter>
     </ClCompile>
+    <ClCompile Include="DialogExecutor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="ConsoleListWidget.h">
@@ -174,6 +177,9 @@
     </QtMoc>
     <QtMoc Include="WrappedWidget.h">
       <Filter>Header Files\GUI</Filter>
+    </QtMoc>
+    <QtMoc Include="DialogExecutor.h">
+      <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>
   <ItemGroup>
@@ -251,6 +257,9 @@
       <Filter>PyScripts\BuildIn</Filter>
     </None>
     <None Include="bin\Scripts\Custom\Markov_Based_Detection.py">
+      <Filter>PyScripts\Custom</Filter>
+    </None>
+    <None Include="bin\Scripts\Custom\SettingDialog.py">
       <Filter>PyScripts\Custom</Filter>
     </None>
   </ItemGroup>

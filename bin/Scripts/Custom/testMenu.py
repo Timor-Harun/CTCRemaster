@@ -3,13 +3,12 @@ from MenuManager import MenuManager
 import win32gui,win32con
 import win32api
 from GUIUtility import GUIUtility
-
+from GUI import GUI
 class testMenu(Menu):
 
     @Menu.MenuItem(path = '文件(&F)/保存(&S)',checkable = False,group = 0,pos = 0,shortcut = "CTRL+S")
     def action_SaveFile():
-        path = GUIUtility.AskOpenFile("action_SaveFile")
-        GUIUtility.MessageBox("show path",path)
+        GUI.DisplayDialog("SettingDialog")
 
     @Menu.MenuItem(path = '文件(&F)/读取(&S)',checkable = False,group = 0,pos = 1,shortcut = "CTRL+R")
     def action_ReadFile():

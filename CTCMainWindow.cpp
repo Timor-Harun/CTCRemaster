@@ -1,9 +1,9 @@
 #include "CTCMainWindow.h"
 
 CTCMainWindow::CTCMainWindow(QWidget* parent)
-    : QMainWindow(parent), menuItemRoot(new MenuItemNode)
+	: QMainWindow(parent), menuItemRoot(new MenuItemNode)
 {
-    ui.setupUi(this);
+	ui.setupUi(this);
 	QSplitter* splitter = new QSplitter(ui.widget_Main);
 	splitter->setOpaqueResize(false);
 	splitter->addWidget(ui.navTreeView);
@@ -15,19 +15,19 @@ CTCMainWindow::CTCMainWindow(QWidget* parent)
 	ui.widget_Main->setLayout(new QHBoxLayout);
 	ui.widget_Main->layout()->addWidget(splitter);
 
-    this->setWindowFlag(Qt::FramelessWindowHint);
+	this->setWindowFlag(Qt::FramelessWindowHint);
 
-    QList<QString> *pWidgetFiles;
-    QList<QString> *pMenuFiles;
-    try
-    {
-        Q_ASSERT(Python->doStartUp());
+	QList<QString>* pWidgetFiles;
+	QList<QString>* pMenuFiles;
+	try
+	{
+		Q_ASSERT(Python->doStartUp());
 
-    }
-    catch (boost::python::error_already_set& e)
-    {
-        QMessageBox::critical(NULL, "Python Fatal Error!", Python->getLastErrorString());
-    }
+	}
+	catch (boost::python::error_already_set& e)
+	{
+		QMessageBox::critical(NULL, "Python Fatal Error!", Python->getLastErrorString());
+	}
 
 	pWidgetFiles = &(Python->getWidgetPythonFiles());
 	pMenuFiles = &(Python->getMenuPythonFiles());
@@ -48,7 +48,7 @@ CTCMainWindow::CTCMainWindow(QWidget* parent)
 	widget->appendRow({ "123","4567" });
 	widget->appendRow({ "345","456567" });
 	widget->appendRow({ "7534","456767" });
-	
+
 	widget->setItem(1, 2, "123");
 	auto index = widget->findItems("123");
 	ui.tabWidget->addTab(widget, "table");
@@ -60,5 +60,11 @@ CTCMainWindow::CTCMainWindow(QWidget* parent)
 	Console->listWidget = ui.listWidget;
 	Console->label_Count = ui.label_Console;
 	Console->init();
-}
 
+	connect(DialogExecutor::getInstance(), &DialogExecutor::execDialogSignals, [=](const std::string& filePath) {
+		WrappedWidget* widget = Python->doGetWidgetCreation(TimorHarun::Utility::getFileNamePrefix(QString::fromStdString(filePath)),true);
+		widget->setWindowModality(Qt::ApplicationModal);//设置窗体模态，要求该窗体没有父类，否则无效
+		widget->show();
+		});
+
+}

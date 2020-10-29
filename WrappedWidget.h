@@ -25,6 +25,8 @@
 #include <QSpinBox>
 #include <QDoubleSpinBox>
 #include <QFontComboBox>
+#include <QCloseEvent>
+
 #include "WrappedProgressBar.h"
 #include "IPAddress.h"
 #include "WrappedTableWidget.h"
@@ -50,6 +52,13 @@ Q_SIGNALS:
     void signal_TableSelectedIndexChanged(const QString& objectName,int row);
     void signal_SpinBoxValueChanged(const QString& objectName, int value);
     void signal_ButtonGroupToggled(const QString& objectName, int index,bool value);
+
+    void signal_close();
+protected:
+    void closeEvent(QCloseEvent* event)
+    {
+        emit signal_close();
+    }
 public:
     void setUUID(const QString& uuid);
 

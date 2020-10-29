@@ -97,7 +97,7 @@ class IPCTC_Impl(CTCBase):
 
 class IPCTC(Widget):
     def __init__(self):
-        pass
+        super(IPCTC,self).__init__()
 
     def OnGUI(self):
         GUI.BeginGUI(self)
@@ -136,6 +136,7 @@ class IPCTC(Widget):
         GUI.Spacer(400)
         GUI.Button("button_Connect","连接服务器")
         GUI.Button("button_Send","开始发送")
+        GUI.Button("button_Test","测试")
         GUI.EndLayout()
 
         GUI.EndGroup()
@@ -148,6 +149,7 @@ class IPCTC(Widget):
         GUI.set.SetControlEnabled(self,"edit_period",False)
         GUI.set.SetIP(self,"edit_serverIP","127.0.0.1")
         GUI.set.SetLineEditText(self,"edit_port","30001")
+
     @GUI.Slot(receiver = "button_Connect",eventType = EventType.Button_Click)
     def OnClick_button_Connect(self):
         ip = GUI.get.GetIP(self,"edit_serverIP")
@@ -194,6 +196,10 @@ class IPCTC(Widget):
             return
 
         self.ipctc.run()
+
+    @GUI.Slot(receiver = "button_Test",eventType = EventType.Button_Click)
+    def OnClick_button_Test(self):     
+        GUI.DisplayDialog("SettingDialog")
 
     def OnClose(self):
         pass

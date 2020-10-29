@@ -7,7 +7,7 @@ import time
 from GUIUtility import GUIUtility
 class testWidget(Widget):
     def __init__(self):
-        pass
+        super().__init__()
 
     def OnGUI(self):
         GUI.BeginGUI(self)

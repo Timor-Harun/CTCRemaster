@@ -147,6 +147,8 @@ class Server_Impl(object):
             Debug.printError(str(e))    
 
 class Server(Widget):
+    def __init__(self):
+        super().__init__()
     def OnGUI(self):
         GUI.BeginGUI(self)
         GUI.BeginGroup("Server Infomation")
