@@ -61,25 +61,32 @@ class PythonScriptSystem:public QObject
 private:
 	enum WindowCommandType
 	{
-		Button        = 0x00001,
-		Label         = 0x00002,
-		LineEdit      = 0x00004,
-		Spacer        = 0x00008,
-		HLayout       = 0x00010,
-		VLayout		  = 0x00020,
-		EndLayout     = 0x00040,
-		CheckBox      = 0x00080,
-		ProgressBar   = 0x00100,
-		BeginGroup    = 0x00200,
-		EndGroup      = 0x00400,
-		IPAddressEdit = 0x00800,
-		ComboBox      = 0x01000,
-		TableView     = 0x02000,
-		SpinBox       = 0x04000,
-		DoubleSpinBox = 0x08000,
-		PlainTextEdit = 0x10000,
-		FontComboBox  = 0x20000,
-		ButtonGroup   = 0x40000
+		Button			   = 0x0000001,
+		Label			   = 0x0000002,
+		LineEdit		   = 0x0000004,
+		Spacer			   = 0x0000008,
+		HLayout			   = 0x0000010,
+		VLayout			   = 0x0000020,
+		EndLayout		   = 0x0000040,
+		CheckBox		   = 0x0000080,
+		ProgressBar		   = 0x0000100,
+		BeginGroup		   = 0x0000200,
+		EndGroup		   = 0x0000400,
+		IPAddressEdit	   = 0x0000800,
+		ComboBox		   = 0x0001000,
+		TableView		   = 0x0002000,
+		SpinBox			   = 0x0004000,
+		DoubleSpinBox	   = 0x0008000,
+		PlainTextEdit	   = 0x0010000,
+		FontComboBox	   = 0x0020000,
+		BeginButtonGroup   = 0x0040000,
+		EndButtonGroup     = 0x0080000,
+		SubButton          = 0x0100000,
+		BeginTab           = 0x0200000,
+		BeginSubTab        = 0x0400000,
+		EndSubTab          = 0x0800000,
+		EndTab             = 0x1000000
+
 	};
 
 	/*******Main Object*******/
@@ -95,6 +102,8 @@ private:
 	object m_PFN_InvokeEditFinishedShot;
 	object m_PFN_InvokeCheckStateChangedShot;
 	object m_PFN_InvokeTableSelectedIndexShot;
+	object m_PFN_InvokeSpinBoxValueChangedShot;
+	object m_PFN_InvokeButtonGroupToggledShot;
 	object m_PFN_SetDialogExecutorPtr;
 
 	/*******Menu PFN*******/

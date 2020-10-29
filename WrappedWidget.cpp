@@ -33,14 +33,17 @@ WrappedWidget::WrappedWidget(QWidget *parent)
     */
 
 }
+
 void WrappedWidget::setUUID(const QString& uuid)
 {
 	this->uuid = uuid;
 }
+
 QString WrappedWidget::getUUID()
 {
 	return this->uuid;
 }
+
 void WrappedWidget::doHorizontalLayout()
 {
 	QWidget* widget = new QWidget;
@@ -48,6 +51,7 @@ void WrappedWidget::doHorizontalLayout()
 	widget->setLayout(hLayout);
 	layoutsStack.push(hLayout);
 }
+
 void WrappedWidget::doVerticalLayout()
 {
 	QWidget* widget = new QWidget;
@@ -56,6 +60,7 @@ void WrappedWidget::doVerticalLayout()
 
 	layoutsStack.push(vLayout);
 }
+
 QPushButton* WrappedWidget::doButton(const QString& objectName, const QString& buttonText)
 {
 	QPushButton* button = new QPushButton;
@@ -71,6 +76,7 @@ QPushButton* WrappedWidget::doButton(const QString& objectName, const QString& b
 	layoutsStack.top()->addWidget(button);
 	return button;
 }
+
 QLineEdit* WrappedWidget::doLineEdit(const QString& objectName)
 {
 	QLineEdit* lineEdit = new QLineEdit;
@@ -78,10 +84,12 @@ QLineEdit* WrappedWidget::doLineEdit(const QString& objectName)
 	layoutsStack.top()->addWidget(lineEdit);
 	return lineEdit;
 }
+
 void WrappedWidget::doSpacer(int spacing)
 {
 	((QBoxLayout*)(layoutsStack.top()))->addSpacing(spacing);
 }
+
 QComboBox* WrappedWidget::doComboBox(const QString& objectName, const QStringList& items)
 {
 	QComboBox* box = new QComboBox;
@@ -89,6 +97,7 @@ QComboBox* WrappedWidget::doComboBox(const QString& objectName, const QStringLis
 	box->addItems(items);
 	return box;
 }
+
 QCheckBox* WrappedWidget::doCheckBox(const QString& objectName, const QString& objectText, bool checked)
 {
 	QCheckBox* checkBox = new QCheckBox;
@@ -101,6 +110,7 @@ QCheckBox* WrappedWidget::doCheckBox(const QString& objectName, const QString& o
 
 	return checkBox;
 }
+
 WrappedProgressBar* WrappedWidget::doProgressBar(const QString& objectName, int value, int min, int max)
 {
 	WrappedProgressBar* progressBar = new WrappedProgressBar;
@@ -110,6 +120,7 @@ WrappedProgressBar* WrappedWidget::doProgressBar(const QString& objectName, int 
 	layoutsStack.top()->addWidget(progressBar);
 	return progressBar;
 }
+
 WrappedTableWidget* WrappedWidget::doTable(const QString& objectName, const QStringList& headerLabels)
 {
 	WrappedTableWidget* table = new WrappedTableWidget;
@@ -121,6 +132,7 @@ WrappedTableWidget* WrappedWidget::doTable(const QString& objectName, const QStr
 		});
 	return table;
 }
+
 IPAddress* WrappedWidget::doIPAddress(const QString& objectName)
 {
 	IPAddress* address = new IPAddress;
@@ -129,6 +141,7 @@ IPAddress* WrappedWidget::doIPAddress(const QString& objectName)
 	layoutsStack.top()->addWidget(address);
 	return address;
 }
+
 void WrappedWidget::doGroupBox(const QString& title)
 {
 	QGroupBox* groupBox = new QGroupBox(title);
@@ -136,10 +149,12 @@ void WrappedWidget::doGroupBox(const QString& title)
 	layoutsStack.top()->addWidget(groupBox);
 	layoutsStack.push(groupBox->layout());
 }
+
 void WrappedWidget::endGroupBox()
 {
 	layoutsStack.pop();
 }
+
 QLabel* WrappedWidget::doLabel(const QString& text)
 {
 	QLabel* label = new QLabel(text);
@@ -147,18 +162,11 @@ QLabel* WrappedWidget::doLabel(const QString& text)
 	layoutsStack.top()->addWidget(label);
 	return label;
 }
+
 void WrappedWidget::endLayout()
 {
 	QLayout* layout = layoutsStack.top();
 	layoutsStack.pop();
 	QWidget* widget = qobject_cast<QWidget*>(layout->parent());
 	layoutsStack.top()->addWidget(widget);
-}
-void WrappedWidget::doTab()
-{
-
-}
-void WrappedWidget::endTab()
-{
-
 }

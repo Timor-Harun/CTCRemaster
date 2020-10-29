@@ -92,9 +92,20 @@ WrappedWidget* PythonScriptSystem::doGetWidgetCreation(const QString &fileName, 
 							QPushButton* btn = widget->doButton(objectName, objectText);
 							//add Handle 代表 把对应控件的指针传递给Python，下同
 							call_method<void>(infoHandle.get(),
-								"addHandle",
-								objectName.toStdString(),
-								typeCode, boost::shared_ptr<QPushButton>(btn));
+											  "addHandle",
+											  objectName.toStdString(),
+											  typeCode, boost::shared_ptr<QPushButton>(btn));
+						}
+						else if (typeCode == WindowCommandType::SubButton)
+						{
+							QString      objectName = _array[1].toString();
+							QString      text       = _array[2].toString();
+							QString      iconPath   = _array[3].toString();
+							QRadioButton*button     = widget->doSubButton(objectName, text, !iconPath.isEmpty(), iconPath);
+							call_method<void>(infoHandle.get(),
+											  "addHandle",
+											  objectName.toStdString(),
+											  typeCode, boost::shared_ptr<QRadioButton>(button));
 						}
 						#pragma endregion
 
@@ -234,23 +245,51 @@ WrappedWidget* PythonScriptSystem::doGetWidgetCreation(const QString &fileName, 
 								              typeCode, boost::shared_ptr<WrappedTableWidget>(table));
 						}
 						// QButtonGroup类型(用于存储 互斥的 RadioButton)
-						else if (typeCode == WindowCommandType::ButtonGroup)
+						else if (typeCode == WindowCommandType::BeginButtonGroup)
 						{
 							QString    objectName      = _array[1].toString();
-							QJsonArray array_textList  = _array[2].toArray();
-							QJsonArray array_imageList = _array[3].toArray();
 
-							QStringList textList;
-							QStringList imageList;
-
-							for (auto& object : array_textList)  { textList.append(object.toString()); }
-							for (auto& object : array_imageList) { imageList.append(object.toString()); }
-
-							QButtonGroup* buttonGroup = widget->doButtonGroup(objectName, textList, imageList);
+							QButtonGroup* buttonGroup = widget->doBeginButtonGroup(objectName);
 							call_method<void>(infoHandle.get(),
 								              "addHandle",
 								              objectName.toStdString(), 
 								              typeCode, boost::shared_ptr<QButtonGroup>(buttonGroup));
+						}
+
+						else if (typeCode == WindowCommandType::EndButtonGroup)
+						{
+							widget->doEndButtonGroup();
+						}
+
+						else if (typeCode == WindowCommandType::BeginTab)
+						{
+							QString     objectName = _array[1].toString();
+							QTabWidget* tabWidget  = widget->beginTab(objectName);
+							call_method<void>(infoHandle.get(),
+								"addHandle",
+								objectName.toStdString(),
+								typeCode, boost::shared_ptr<QTabWidget>(tabWidget));
+						}
+
+						else if (typeCode == WindowCommandType::EndTab)
+						{
+							widget->endTab();
+						}
+
+						else if (typeCode == WindowCommandType::BeginSubTab)
+						{
+							QString     tabName  = _array[1].toString();
+							QString     tabTitle = _array[2].toString();
+							QWidget*	tabSubWidget = widget->beginSubTab(tabName, tabTitle);
+							call_method<void>(infoHandle.get(),
+											 "addHandle",
+											  tabName.toStdString(),
+											  typeCode, boost::shared_ptr<QWidget>(tabSubWidget));
+						}
+
+						else if (typeCode == WindowCommandType::EndSubTab)
+						{
+							widget->endSubTab();
 						}
 						#pragma endregion
 
@@ -280,7 +319,7 @@ WrappedWidget* PythonScriptSystem::doGetWidgetCreation(const QString &fileName, 
 				}
 			}
 		}
-		QObject::connect(widget, &WrappedWidget::signal_ButtonClickEvent, [=](QString objectName) {
+		QObject::connect(widget, &WrappedWidget::signal_ButtonClickEvent, [=](const QString &objectName) {
 			py_try_begin_safe
 			{
 				boost::python::list * retList = new boost::python::list;
@@ -290,7 +329,7 @@ WrappedWidget* PythonScriptSystem::doGetWidgetCreation(const QString &fileName, 
 			py_try_end_safe;
 			});
 
-		QObject::connect(widget, &WrappedWidget::signal_EditFinished, [=](QString objectName) {
+		QObject::connect(widget, &WrappedWidget::signal_EditFinished, [=](const QString& objectName) {
 			py_try_begin_safe
 			{
 				m_PFN_SetCurrentUUID(widget->getUUID().toStdString());
@@ -299,7 +338,7 @@ WrappedWidget* PythonScriptSystem::doGetWidgetCreation(const QString &fileName, 
 			py_try_end_safe;
 			});
 
-		QObject::connect(widget, &WrappedWidget::signal_CheckBoxStageChanged, [=](QString objectName) {
+		QObject::connect(widget, &WrappedWidget::signal_CheckBoxStageChanged, [=](const QString& objectName) {
 			py_try_begin_safe
 			{
 				m_PFN_SetCurrentUUID(widget->getUUID().toStdString());
@@ -307,7 +346,7 @@ WrappedWidget* PythonScriptSystem::doGetWidgetCreation(const QString &fileName, 
 			}
 			py_try_end_safe; });
 
-		QObject::connect(widget, &WrappedWidget::signal_TableSelectedIndexChanged, [=](QString objectName,int index) {
+		QObject::connect(widget, &WrappedWidget::signal_TableSelectedIndexChanged, [=](const QString& objectName,int index) {
 			py_try_begin_safe
 			{
 				m_PFN_SetCurrentUUID(widget->getUUID().toStdString());
@@ -316,6 +355,23 @@ WrappedWidget* PythonScriptSystem::doGetWidgetCreation(const QString &fileName, 
 			py_try_end_safe; 
 		});
 
+		QObject::connect(widget, &WrappedWidget::signal_SpinBoxValueChanged, [=](const QString& objectName) {
+			py_try_begin_safe
+			{
+				m_PFN_SetCurrentUUID(widget->getUUID().toStdString());
+				m_PFN_InvokeSpinBoxValueChangedShot(objectName.toStdString());
+			}
+			py_try_end_safe;
+			});
+
+		QObject::connect(widget, &WrappedWidget::signal_ButtonGroupToggled, [=](const QString& objectName,int index,bool value) {
+			py_try_begin_safe
+			{
+				m_PFN_SetCurrentUUID(widget->getUUID().toStdString());
+				m_PFN_InvokeButtonGroupToggledShot(objectName.toStdString(), index);
+			}
+			py_try_end_safe;
+			});
 		//初始化完毕后，调用OnStart方法
 		call_method<void>(infoHandle.get(), "addWidgetHandle",boost::shared_ptr<QWidget>(widget));
 

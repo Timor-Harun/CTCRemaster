@@ -144,34 +144,34 @@ class WidgetCommandBuilder():
         self.commands.append([WidgetType.TableView,objectName,header])
 
     def doBeginTab(self,objectName):
-        pass
+        self.commands.append([WidgetType.BeginTab,objectName])
 
-    def doBeginSubTab(self,tabName):
-        pass
+    def doBeginSubTab(self,tabWidgetObjectName,tabName):
+        self.commands.append([WidgetType.BeginSubTab,tabWidgetObjectName,tabName])
 
     def doEndSubTab(self):
-        pass
+        self.commands.append([WidgetType.EndSubTab])
 
     def doEndTab(self):
-        pass
+        self.commands.append([WidgetType.EndTab])
 
     def doPlainTextEdit(self,objectName):
-        pass
+        self.commands.append([WidgetType.PlainTextEdit,objectName])
 
     def doSpinBox(self,objectName,min,max,step):
-        pass
+        self.commands.append([WidgetType.SpinBox,objectName,min,max,step])
 
     def doDoubleSpinBox(self,objectName,min,max,step):
-        pass 
+        self.commands.append([WidgetType.DoubleSpinBox,objectName,min,max,step])
 
     def doBeginButtonGroup(self,objectName):
-        pass
+        self.commands.append([WidgetType.BeginButtonGroup,objectName])
 
     def doEndButtonGroup(self):
-        pass
+        self.commands.append([WidgetType.EndButtonGroup])
 
-    def doSubButton(self,objectName):
-        pass
+    def doSubButton(self,objectName,text,iconPath):
+        self.commands.append([WidgetType.SubButton,objectName,text,iconPath])
 
     def getJsonResult(self):
         if self.jsonStr != None:
@@ -307,8 +307,48 @@ class GUI(object):
 
     @staticmethod
     @RequireGUIBegin
-    def ComboBox(objectName,items):
-        GUI.CurrentWidgetCommands.doCombox(objectName,items)
+    def BeginButtonGroup(objectName):
+        GUI.CurrentWidgetCommands.doBeginButtonGroup(objectName)
+
+    @staticmethod
+    @RequireGUIBegin
+    def EndButtonGroup():
+        GUI.CurrentWidgetCommands.doEndButtonGroup()
+
+    @staticmethod
+    @RequireGUIBegin
+    def SubButton(objectName:str,text:str,iconPath:str = str()):
+        GUI.CurrentWidgetCommands.doSubButton(objectName,text,iconPath)
+   
+    @staticmethod
+    @RequireGUIBegin
+    def BeginTab(tabObjectName:str):
+        GUI.CurrentWidgetCommands.doBeginTab(tabObjectName)
+
+    @staticmethod
+    @RequireGUIBegin
+    def EndTab():
+        GUI.CurrentWidgetCommands.doEndTab()
+
+    @staticmethod
+    @RequireGUIBegin
+    def BeginSubTab(tabWidgetObjectName:str,tabName:str):
+        GUI.CurrentWidgetCommands.doBeginSubTab(tabWidgetObjectName,tabName)
+
+    @staticmethod
+    @RequireGUIBegin
+    def EndSubTab():
+        GUI.CurrentWidgetCommands.doEndSubTab()
+
+    @staticmethod
+    @RequireGUIBegin
+    def SpinBox(objectName:str,min = -2**31,max = 2**31-1,step = 1):
+        GUI.CurrentWidgetCommands.doSpinBox(objectName,min,max,step)
+
+    @staticmethod
+    @RequireGUIBegin
+    def DoubleSpinBox(objectName:str,min = -sys.float_info.max,max = sys.float_info.max,step = 1.0):
+        GUI.CurrentWidgetCommands.doDoubleSpinBox(objectName,min,max,step)
 
     @staticmethod
     def Slot(receiver,eventType):
@@ -486,6 +526,35 @@ class GUI(object):
             else:
                 handle.setIP(qt_module_wrapped.qstr(IP))
 
+        @staticmethod
+        def Size(self,objectName,width,height):
+            handle = GUI.UUIDToWidgetMap[self.getUUID()].findHandle(objectName)
+            if not handle:
+                Debug.printError(objectName+" not found")
+            else:
+                handle.setSize(width,height)
+
+        @staticmethod
+        def Width(self,objectName,width):
+            handle = GUI.UUIDToWidgetMap[self.getUUID()].findHandle(objectName)
+            if not handle:
+                Debug.printError(objectName+" not found")
+            else:
+                handle.setWidth(width)
+
+        def Height(self,objectName,height):
+            handle = GUI.UUIDToWidgetMap[self.getUUID()].findHandle(objectName)
+            if not handle:
+                Debug.printError(objectName+" not found")
+            else:
+                handle.setWidth(height)
+
+        def Property(self,objectName,propertyName,value):
+            handle = GUI.UUIDToWidgetMap[self.getUUID()].findHandle(objectName)
+            if not handle:
+                Debug.printError(objectName+" not found")
+            else:
+                handle.setProperty(propertyName,value)
     class get():
         @staticmethod
         def GetChecked(self,objectName):
@@ -500,26 +569,26 @@ class GUI(object):
         @staticmethod
         def GetLineEditText(self,objectName):
             ptr = GUI.UUIDToWidgetMap[self.getUUID()].ptr
-            handle = GUI.UUIDToWidgetMap[self.getUUID()].findHandle(objectName)
+            handle = ptr.findHandle(objectName)
             return handle.getText().stdstr()
 
         @staticmethod
         def GetIP(self,objectName):
             ptr = GUI.UUIDToWidgetMap[self.getUUID()].ptr
-            handle = GUI.UUIDToWidgetMap[self.getUUID()].findHandle(objectName)
+            handle =ptr.findHandle(objectName)
             return handle.getIP().stdstr()
 
         @staticmethod
         def GetTableRowCount(self,objectName):
             ptr = GUI.UUIDToWidgetMap[self.getUUID()].ptr
-            handle = GUI.UUIDToWidgetMap[self.getUUID()].findHandle(objectName)
+            handle = ptr.findHandle(objectName)
             return handle.getRowCount()
 
     class modify():
         @staticmethod
         def AppendTableItem(self,objectName,item:list):
             ptr = GUI.UUIDToWidgetMap[self.getUUID()].ptr
-            handle = GUI.UUIDToWidgetMap[self.getUUID()].findHandle(objectName)
+            handle = ptr.findHandle(objectName)
             vct = qt_module_wrapped.str_vector()
             for i in item:
                 vct.append(str(i))
@@ -529,12 +598,12 @@ class GUI(object):
         @staticmethod
         def SetTableItem(self,objectName,row,column,str):
             ptr = GUI.UUIDToWidgetMap[self.getUUID()].ptr
-            handle = GUI.UUIDToWidgetMap[self.getUUID()].findHandle(objectName)
+            handle = ptr.findHandle(objectName)
             handle.setItem(row,column,str)
             handle.updateItem()
 
         @staticmethod
         def ClearTable(self,objectName):
             ptr = GUI.UUIDToWidgetMap[self.getUUID()].ptr
-            handle = GUI.UUIDToWidgetMap[self.getUUID()].findHandle(objectName)
+            handle = ptr.findHandle(objectName)
             handle.clear()
