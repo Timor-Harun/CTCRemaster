@@ -549,12 +549,21 @@ class GUI(object):
             else:
                 handle.setWidth(height)
 
-        def Property(self,objectName,propertyName,value):
+        def WindowProperty(self,propertyName,value):
+            handle = GUI.UUIDToWidgetMap[self.getUUID()].widgetPtr
+            if not handle:
+                Debug.printError("handle not found")
+            else:
+                handle.setProperty(propertyName,qt_module_wrapped.qvariant_class(value))
+
+        def TabPosition(self,objectName,value):
             handle = GUI.UUIDToWidgetMap[self.getUUID()].findHandle(objectName)
             if not handle:
                 Debug.printError(objectName+" not found")
             else:
-                handle.setProperty(propertyName,value)
+                handle.setTabPosition(qt_module_wrapped.qtab_position(value))
+            
+
     class get():
         @staticmethod
         def GetChecked(self,objectName):

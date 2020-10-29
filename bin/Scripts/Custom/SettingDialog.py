@@ -1,6 +1,6 @@
 from GUI import GUI,Widget,EventType
 from GUIUtility import GUIUtility
-
+from Debug import Debug
 class SettingDialog(Widget):
     def __init__(self):
         super().__init__(tabMode = False,dialogMode = True)
@@ -56,7 +56,8 @@ class SettingDialog(Widget):
         GUI.set.WindowIcon(self,'C:\\Users\\Timor\\Desktop\\testIco.bmp')
         GUI.set.Width(self,"spinBox1",200)
         GUI.set.Width(self,"spinBox2",200)
-        GUI.set.Property(self,"spinBox2","maximized",True)
+        GUI.set.TabPosition(self,"Tab_Main",2)
+        Debug.printInfo("finished")
         
 
     def OnClose(self):
