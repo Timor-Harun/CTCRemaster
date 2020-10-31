@@ -12,7 +12,7 @@ class testMenu(Menu):
     @staticmethod
     @Menu.MenuItem(path = '文件(&F)/保存(&S)',checkable = False,group = 0,pos = 0,shortcut = "CTRL+S")
     def action_SaveFile():
-        GUI.DisplayDialog("SettingDialog")
+        GUI.DisplayDialog("AboutDialog")
 
     @staticmethod
     @Menu.MenuItem(path = '文件(&F)/读取(&S)',checkable = False,group = 0,pos = 1,shortcut = "CTRL+R")
@@ -45,3 +45,8 @@ class testMenu(Menu):
     @Menu.MenuItem(path = '编辑(&E)/A/B',checkable = False,group = 0,pos = 0,shortcut = "CTRL+F")
     def action_find1():
         GUIUtility.MessageBox("what do you want to find","aaaa")
+
+    @staticmethod
+    @Menu.MenuItem(path = '帮助(&H)/关于',checkable = False,group = 0,pos = 0,shortcut = "CTRL+H")
+    def action_about():
+        GUI.DisplayDialog("AboutDialog")

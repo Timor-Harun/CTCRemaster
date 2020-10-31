@@ -2,14 +2,33 @@ from GUI import GUI,Widget,EventType
 from GUIUtility import GUIUtility
 from Debug import Debug
 
-class SettingDialog(Widget):
+class NewFeatureDemo(Widget):
     def __init__(self):
-        super().__init__(tabMode = False,dialogMode = True)
+        super().__init__(tabMode = True)
 
     def OnGUI(self):
         GUI.BeginGUI(self)
-        
+
+        GUI.BeginHorizontalLayout()
+        GUI.Button("button","按钮")
+        GUI.EndLayout()
+
+        GUI.BeginGroup("Group SpinBox Demo")
+        GUI.BeginVerticalLayout()
+        GUI.BeginHorizontalLayout()
+        GUI.Label("label_1",'随便编辑1')
+        GUI.DoubleSpinBox('spinBox1',min = -12.0,max = 20,step = 0.1)
+        GUI.EndLayout()
+        GUI.BeginHorizontalLayout()
+        GUI.Label("label2",'随便编辑2')
+        GUI.DoubleSpinBox('spinBox2',min = -10.0,max = 20,step = 0.5)
+        GUI.EndLayout()
+        GUI.EndLayout()
+        GUI.EndGroup()
+
+        GUI.BeginGroup("Group Tab Demo")
         GUI.BeginTab('Tab_Main',True)
+
         GUI.BeginSubTab('Tab111','Tab1')
 
         GUI.BeginVerticalLayout()
@@ -29,6 +48,7 @@ class SettingDialog(Widget):
         GUI.EndSubTab()
 
         GUI.EndTab()
+        GUI.EndGroup()
 
         GUI.EndGUI()
 

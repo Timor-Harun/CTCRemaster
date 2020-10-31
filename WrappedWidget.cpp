@@ -34,6 +34,11 @@ WrappedWidget::WrappedWidget(QWidget *parent)
 
 }
 
+void WrappedWidget::closeEvent(QCloseEvent* event)
+{
+	emit signal_close();
+}
+
 void WrappedWidget::setUUID(const QString& uuid)
 {
 	this->uuid = uuid;
@@ -77,12 +82,61 @@ QPushButton* WrappedWidget::doButton(const QString& objectName, const QString& b
 	return button;
 }
 
+QRadioButton* WrappedWidget::doSubButton(const QString& buttonName, const QString& text, bool useIcon, const QString& iconPath)
+{
+	if (!pButtonGroup)
+	{
+		Console->printError(called_info, "you can not call SubButton before call BeginButtonGroup");
+		return nullptr;
+	}
+	else
+	{
+		QRadioButton* radioButton = new QRadioButton(this);
+		radioButton->setObjectName(buttonName);
+		radioButton->setText(text);
+		if (useIcon)
+		{
+			radioButton->setIcon(QIcon(iconPath));
+		}
+		return radioButton;
+	}
+}
+
 QLineEdit* WrappedWidget::doLineEdit(const QString& objectName)
 {
 	QLineEdit* lineEdit = new QLineEdit;
 	connect(lineEdit, &QLineEdit::editingFinished, this, [=]() {emit signal_EditFinished(objectName); });
 	layoutsStack.top()->addWidget(lineEdit);
 	return lineEdit;
+}
+
+QPlainTextEdit* WrappedWidget::doPlainTextEdit(const QString& objectName)
+{
+	QPlainTextEdit* edit = new QPlainTextEdit;
+	edit->setObjectName(objectName);
+	connect(edit, &QPlainTextEdit::textChanged, this, [=]() {emit signal_EditFinished(objectName); });
+	layoutsStack.top()->addWidget(edit);
+	return edit;
+}
+
+QSpinBox* WrappedWidget::doSpinBox(const QString& objectName, int min, int max, int step)
+{
+	QSpinBox* box = new QSpinBox;
+	box->setObjectName(objectName);
+	box->setRange(min, max);
+	box->setSingleStep(step);
+	layoutsStack.top()->addWidget(box);
+	return box;
+}
+
+QDoubleSpinBox* WrappedWidget::doDoubleSpinBox(const QString& objectName, double min, double max, double step)
+{
+	QDoubleSpinBox* box = new QDoubleSpinBox;
+	box->setObjectName(objectName);
+	box->setRange(min, max);
+	box->setSingleStep(step);
+	layoutsStack.top()->addWidget(box);
+	return box;
 }
 
 void WrappedWidget::doSpacer(int spacing)
@@ -155,10 +209,105 @@ void WrappedWidget::endGroupBox()
 	layoutsStack.pop();
 }
 
-QLabel* WrappedWidget::doLabel(const QString& text)
+QButtonGroup* WrappedWidget::doBeginButtonGroup(const QString& groupName)
+{
+	if (pButtonGroup)
+	{
+		Console->printWarning(called_info, "you can not call BeginButtonGroup before call EndButtonGroup");
+		return nullptr;
+	}
+	else
+	{
+		pButtonGroup = new QButtonGroup;
+		pButtonGroup->setExclusive(true);
+		pButtonGroup->setObjectName(groupName);
+		connect(pButtonGroup, (void (QButtonGroup::*)(int, bool)) & QButtonGroup::buttonToggled, [=](int index, bool toggled) {
+			emit signal_ButtonGroupToggled(groupName, index, toggled);
+			});
+	}
+	return pButtonGroup;
+}
+
+void WrappedWidget::doEndButtonGroup()
+{
+	if (!pButtonGroup)
+	{
+		Console->printWarning(called_info, "you can not call EndButtonGroup before call BeginButtonGroup");
+	}
+	else
+	{
+		pButtonGroup = nullptr;
+	}
+}
+
+QTabWidget* WrappedWidget::beginTab(const QString& tabName, bool styled)
+{
+	if (pTabWidget)
+	{
+		Console->printWarning(called_info, "you can not call BeginTab before call EndTab");
+		return nullptr;
+	}
+	else
+	{
+		pTabWidget = styled ? new WrappedTabWidget : new QTabWidget;
+		pTabWidget->setObjectName(tabName);
+		layoutsStack.top()->addWidget(pTabWidget);
+	}
+	return pTabWidget;
+}
+
+void WrappedWidget::endTab()
+{
+	if (!pTabWidget)
+	{
+		Console->printWarning(called_info, "you can not call EndTab before call BeginTab ");
+	}
+	else
+	{
+		pTabWidget = nullptr;
+	}
+}
+
+QWidget* WrappedWidget::beginSubTab(const QString& tabName, const QString& tabTitle)
+{
+	if (!pTabWidget)
+	{
+		Console->printWarning(called_info, "you can not call BeginSubTab before call BeginTab");
+	}
+	QWidget* widget = new QWidget(pTabWidget);
+	widget->setObjectName(tabName);
+	widget->setLayout(new QGridLayout);
+	layoutsStack.push(widget->layout());
+	pTabWidget->addTab(widget, tabTitle);
+	return widget;
+}
+
+void WrappedWidget::endSubTab()
+{
+	if (!pTabWidget)
+	{
+		Console->printWarning(called_info, "you can not call EndSubTab before call BeginSubTab");
+	}
+	else
+	{
+		layoutsStack.pop();
+	}
+}
+
+QLabel* WrappedWidget::doLabel(const QString &objectName,const QString& text,bool imageMode, const QString& imagePath)
 {
 	QLabel* label = new QLabel(text);
-
+	label->setObjectName(objectName);
+	if (imageMode)
+	{
+		label->setPixmap(imagePath);
+		label->setScaledContents(true);
+	}
+	else
+	{
+		label->setText(text);
+		//label->setProperty("alignment", 132);
+	}
 	layoutsStack.top()->addWidget(label);
 	return label;
 }

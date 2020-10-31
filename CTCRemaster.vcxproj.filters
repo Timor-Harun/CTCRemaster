@@ -64,6 +64,9 @@
     <Filter Include="Header Files\GUI">
       <UniqueIdentifier>{b2993357-d49d-4af6-a254-5208a15c0cdc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Config">
+      <UniqueIdentifier>{b6f778de-07f9-42dd-a9f1-01d024237d17}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <QtRcc Include="CTCMainWindow.qrc">
@@ -137,6 +140,12 @@
     <ClCompile Include="DialogExecutor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="WrappedTabWidget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CustomTabStyle.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="ConsoleListWidget.h">
@@ -181,6 +190,9 @@
     <QtMoc Include="DialogExecutor.h">
       <Filter>Header Files</Filter>
     </QtMoc>
+    <QtMoc Include="WrappedTabWidget.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Global.h">
@@ -209,6 +221,9 @@
     </ClInclude>
     <ClInclude Include="IconButton.h">
       <Filter>Header Files\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="CustomTabStyle.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -260,6 +275,15 @@
       <Filter>PyScripts\Custom</Filter>
     </None>
     <None Include="bin\Scripts\Custom\SettingDialog.py">
+      <Filter>PyScripts\Custom</Filter>
+    </None>
+    <None Include="bin\Scripts\Test\Dialog.py">
+      <Filter>PyScripts\Test</Filter>
+    </None>
+    <None Include="bin\Scripts\Custom\NewFeatureDemo.py">
+      <Filter>PyScripts\Custom</Filter>
+    </None>
+    <None Include="bin\Scripts\Custom\AboutDialog.py">
       <Filter>PyScripts\Custom</Filter>
     </None>
   </ItemGroup>

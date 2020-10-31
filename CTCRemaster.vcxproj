@@ -101,6 +101,7 @@
     <ClCompile Include="ConsoleLogic.cpp" />
     <ClCompile Include="ConsoleMessageItemWidget.cpp" />
     <ClCompile Include="ConsoleMessagePool.cpp" />
+    <ClCompile Include="CustomTabStyle.cpp" />
     <ClCompile Include="DialogExecutor.cpp">
       <DynamicSource Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">input</DynamicSource>
       <QtMocFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(Filename).moc</QtMocFileName>
@@ -121,6 +122,7 @@
     <ClCompile Include="QtNavTreeView.cpp" />
     <ClCompile Include="TitleBarWidget.cpp" />
     <ClCompile Include="WrappedTableWidget.cpp" />
+    <ClCompile Include="WrappedTabWidget.cpp" />
     <ClCompile Include="WrappedWidget.cpp" />
     <QtRcc Include="CTCMainWindow.qrc" />
     <QtMoc Include="CTCMainWindow.h" />
@@ -137,11 +139,13 @@
     <QtMoc Include="ConsoleListWidget.h" />
   </ItemGroup>
   <ItemGroup>
+    <QtMoc Include="WrappedTabWidget.h" />
     <QtMoc Include="ConsoleLogic.h" />
     <ClInclude Include="ConsoleMessageItemWidget.h" />
     <QtMoc Include="IPAddress.h" />
     <ClInclude Include="ConsoleMessagePool.h" />
     <QtMoc Include="DialogExecutor.h" />
+    <ClInclude Include="CustomTabStyle.h" />
     <ClInclude Include="IconButton.h" />
     <ClInclude Include="PlotManager.h" />
     <ClInclude Include="PlotWindow.h" />
@@ -167,14 +171,20 @@
     <None Include="bin\Scripts\BuildIn\Menu.py" />
     <None Include="bin\Scripts\BuildIn\MenuManager.py" />
     <None Include="bin\Scripts\BuildIn\qt_module_wrapped.pyd" />
+    <None Include="bin\Scripts\Custom\AboutDialog.py" />
     <None Include="bin\Scripts\Custom\CTCBase.py" />
     <None Include="bin\Scripts\Custom\IPCTC.py" />
     <None Include="bin\Scripts\Custom\JitterBug.py" />
     <None Include="bin\Scripts\Custom\Markov_Based_Detection.py" />
+    <None Include="bin\Scripts\Custom\NewFeatureDemo.py">
+      <SubType>
+      </SubType>
+    </None>
     <None Include="bin\Scripts\Custom\Server.py" />
     <None Include="bin\Scripts\Custom\SettingDialog.py" />
     <None Include="bin\Scripts\Custom\testMenu.py" />
     <None Include="bin\Scripts\Custom\testWidget.py" />
+    <None Include="bin\Scripts\Test\Dialog.py" />
     <None Include="bin\Scripts\Test\test.py" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

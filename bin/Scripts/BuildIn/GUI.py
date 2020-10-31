@@ -13,6 +13,24 @@ from abc import ABC,abstractmethod
 from Debug import *
 from GUIUtility import GUIUtility
 
+class AlignmentFlag:
+    AlignLeft = 0x0001
+    AlignLeading = AlignLeft
+    AlignRight = 0x0002
+    AlignTrailing = AlignRight
+    AlignHCenter = 0x0004
+    AlignJustify = 0x0008
+    AlignAbsolute = 0x0010
+    AlignHorizontal_Mask = AlignLeft | AlignRight | AlignHCenter | AlignJustify | AlignAbsolute
+
+    AlignTop = 0x0020
+    AlignBottom = 0x0040
+    AlignVCenter = 0x0080
+    AlignBaseline = 0x0100
+
+    AlignVertical_Mask = AlignTop | AlignBottom | AlignVCenter | AlignBaseline
+
+    AlignCenter = AlignVCenter | AlignHCenter
 # 窗口类型 定义
 class WidgetType():
     Button		      = 0x0000001
@@ -104,8 +122,8 @@ class WidgetCommandBuilder():
     def doButton(self, objectName,buttonText):
         self.commands.append([WidgetType.Button,objectName,buttonText])
 
-    def doLabel(self,text):
-        self.commands.append([WidgetType.Label,text])
+    def doLabel(self,objectName:str,text:str,imageMode:bool,imagePath:str):
+        self.commands.append([WidgetType.Label,objectName,text,imageMode,imagePath])
 
     def doLineEdit(self,objectName):
         self.commands.append([WidgetType.LineEdit,objectName])
@@ -143,8 +161,8 @@ class WidgetCommandBuilder():
     def doTable(self,objectName:str,header:list):
         self.commands.append([WidgetType.TableView,objectName,header])
 
-    def doBeginTab(self,objectName):
-        self.commands.append([WidgetType.BeginTab,objectName])
+    def doBeginTab(self,objectName:str,styled:bool):
+        self.commands.append([WidgetType.BeginTab,objectName,styled])
 
     def doBeginSubTab(self,tabWidgetObjectName,tabName):
         self.commands.append([WidgetType.BeginSubTab,tabWidgetObjectName,tabName])
@@ -175,10 +193,12 @@ class WidgetCommandBuilder():
 
     def getJsonResult(self):
         if self.jsonStr != None:
+            Debug.printInfo("self.jsonStr exists")
             return self.jsonStr
         else:
             import json
-            self.jsonStr =  json.dumps(self.commands)
+            self.jsonStr =  json.dumps(self .commands)
+            Debug.printInfo("self.jsonStr not exists")
             return self.jsonStr
 
 # 所有窗口的基类
@@ -234,7 +254,7 @@ class GUI(object):
     #当前窗口的UUID
     CurrentWidgetUUID = None
 
-    # 字典：key = 窗口类名称，value = 窗口描数信息
+    # 字典：key = 窗口类名称，value = 窗口创建命令信息
     WidgetCommandsMaps = {}
 
     # 字典：key = 窗口类名称，value = 窗口事件 信息
@@ -262,8 +282,8 @@ class GUI(object):
 
     @staticmethod
     @RequireGUIBegin
-    def Label(text):
-        GUI.CurrentWidgetCommands.doLabel(text)
+    def Label(objectName:str,text:str="",imageMode:bool=False,imagePath = ""):
+        GUI.CurrentWidgetCommands.doLabel(objectName,text,imageMode,imagePath)
 
     @staticmethod
     @RequireGUIBegin
@@ -322,8 +342,8 @@ class GUI(object):
    
     @staticmethod
     @RequireGUIBegin
-    def BeginTab(tabObjectName:str):
-        GUI.CurrentWidgetCommands.doBeginTab(tabObjectName)
+    def BeginTab(tabObjectName:str,styled:bool = False):
+        GUI.CurrentWidgetCommands.doBeginTab(tabObjectName,styled)
 
     @staticmethod
     @RequireGUIBegin
@@ -556,14 +576,47 @@ class GUI(object):
             else:
                 handle.setProperty(propertyName,qt_module_wrapped.qvariant_class(value))
 
+        def Property(self,objectName,propertyName,value):
+            handle = GUI.UUIDToWidgetMap[self.getUUID()].findHandle(objectName)
+            if not handle:
+                Debug.printError("handle not found")
+            else:
+                handle.setProperty(propertyName,qt_module_wrapped.qvariant_class(value))
+
         def TabPosition(self,objectName,value):
             handle = GUI.UUIDToWidgetMap[self.getUUID()].findHandle(objectName)
             if not handle:
                 Debug.printError(objectName+" not found")
             else:
                 handle.setTabPosition(qt_module_wrapped.qtab_position(value))
-            
 
+        def LabelImage(self,objectName:str,path:str):
+            handle = GUI.UUIDToWidgetMap[self.getUUID()].findHandle(objectName)
+            if not handle:
+                Debug.printError(objectName+" not found")
+            else:
+                handle.setPicture(qt_module_wrapped.qstr(path))
+
+        def LabelAlignment(self,objectName:str,alignment):
+            handle = GUI.UUIDToWidgetMap[self.getUUID()].findHandle(objectName)
+            if not handle:
+                Debug.printError(objectName+" not found")
+            else:
+                handle.setAlignment(qt_module_wrapped.qalignment_class(alignment))
+
+        def Font(self,objectName:str,font):
+            handle = GUI.UUIDToWidgetMap[self.getUUID()].findHandle(objectName)
+            if not handle:
+                Debug.printError(objectName+" not found")
+            else:
+                handle.setFont(font)
+
+        def LabelHyperLinkMode(self,objectName:str,value:bool):
+            handle = GUI.UUIDToWidgetMap[self.getUUID()].findHandle(objectName)
+            if not handle:
+                Debug.printError(objectName+" not found")
+            else:
+                handle.setHyperLinkMode(value)      
     class get():
         @staticmethod
         def GetChecked(self,objectName):

@@ -63,17 +63,21 @@ WrappedWidget* PythonScriptSystem::doGetWidgetCreation(const QString &fileName, 
 						//QLabel类型
 						if (typeCode == WindowCommandType::Label)
 						{
-							QString text = _array[1].toString();
-							QLabel* label = widget->doLabel(text);
+							QString objectName = _array[1].toString();
+							QString text       = _array[2].toString();
+							bool    imageMode  = _array[3].toBool();
+							QString imagePath  = _array[4].toString();
+							QLabel* label      = widget->doLabel(objectName,text,imageMode,imagePath);
+							call_method<void>(infoHandle.get(), "addHandle", objectName.toStdString(), typeCode, boost::shared_ptr<QLabel>(label));
 						}
 
 						//WrappedProgressBar类型（SetValue变为发射信号，以便在多线程中更新）
 						else if (typeCode == WindowCommandType::ProgressBar)
 						{
 							QString				objectName = _array[1].toString();
-							int					value = _array[2].toInt();
-							int					min = _array[3].toInt();
-							int					max = _array[4].toInt();
+							int					value      = _array[2].toInt();
+							int					min        = _array[3].toInt();
+							int					max        = _array[4].toInt();
 							WrappedProgressBar* progressBar = widget->doProgressBar(objectName, value, min, max);
 							//特别注意：此处updateValue_signal，需要绑定槽函数setValue，否则无法更新
 							connect(progressBar, &WrappedProgressBar::updateValue_signal, progressBar, &WrappedProgressBar::setValue);
@@ -89,7 +93,7 @@ WrappedWidget* PythonScriptSystem::doGetWidgetCreation(const QString &fileName, 
 						{
 							QString      objectName = _array[1].toString();
 							QString      objectText = _array[2].toString();
-							QPushButton* btn = widget->doButton(objectName, objectText);
+							QPushButton* btn        = widget->doButton(objectName, objectText);
 							//add Handle 代表 把对应控件的指针传递给Python，下同
 							call_method<void>(infoHandle.get(),
 											  "addHandle",
@@ -116,7 +120,7 @@ WrappedWidget* PythonScriptSystem::doGetWidgetCreation(const QString &fileName, 
 						else if (typeCode == WindowCommandType::LineEdit)
 						{
 							QString    objectName = _array[1].toString();
-							QLineEdit* edit = widget->doLineEdit(objectName);
+							QLineEdit* edit       = widget->doLineEdit(objectName);
 							call_method<void>(infoHandle.get(),
 								"addHandle",
 								objectName.toStdString(),
@@ -127,8 +131,8 @@ WrappedWidget* PythonScriptSystem::doGetWidgetCreation(const QString &fileName, 
 						//特殊类型：IP编辑框
 						else if (typeCode == WindowCommandType::IPAddressEdit)
 						{
-							QString objectName = _array[1].toString();
-							IPAddress* ipAddress = widget->doIPAddress(objectName);
+							QString    objectName = _array[1].toString();
+							IPAddress* ipAddress  = widget->doIPAddress(objectName);
 
 							call_method<void>(infoHandle.get(),
 								"addHandle",
@@ -165,8 +169,8 @@ WrappedWidget* PythonScriptSystem::doGetWidgetCreation(const QString &fileName, 
 						// QPlainTextEdit类型(富文本编辑框)
 						else if (typeCode == WindowCommandType::PlainTextEdit)
 						{
-							QString objectName = _array[1].toString();
-							QPlainTextEdit* edit = widget->doPlainTextEdit(objectName);
+							QString           objectName = _array[1].toString();
+							QPlainTextEdit*   edit       = widget->doPlainTextEdit(objectName);
 							call_method<void>(infoHandle.get(), "addHandle", objectName.toStdString(), typeCode, boost::shared_ptr<QPlainTextEdit>(edit));
 						}
 						#pragma endregion
@@ -264,7 +268,8 @@ WrappedWidget* PythonScriptSystem::doGetWidgetCreation(const QString &fileName, 
 						else if (typeCode == WindowCommandType::BeginTab)
 						{
 							QString     objectName = _array[1].toString();
-							QTabWidget* tabWidget  = widget->beginTab(objectName);
+							bool		styled     = _array[2].toBool();
+							QTabWidget* tabWidget = widget->beginTab(objectName,styled);
 							call_method<void>(infoHandle.get(),
 								"addHandle",
 								objectName.toStdString(),
@@ -372,13 +377,13 @@ WrappedWidget* PythonScriptSystem::doGetWidgetCreation(const QString &fileName, 
 			}
 			py_try_end_safe;
 			});
-		//初始化完毕后，调用OnStart方法
+		//初始化完毕后，先调用addWidgetHandle方法，添加QWidget的句柄
 		call_method<void>(infoHandle.get(), "addWidgetHandle",boost::shared_ptr<QWidget>(widget));
 
-		//初始化完毕后，调用OnStart方法
+		//然后调用OnStart方法
 		call_method<void>(classHandle.get(), "OnStart");
 
-		//绑定Close事件，并在Close事件中调用OnClose;
+		//绑定Close事件，并在Close事件中调用OnClose方法;
 		connect(widget, &WrappedWidget::signal_close, [=]() {
 			py_try_begin_safe
 			{

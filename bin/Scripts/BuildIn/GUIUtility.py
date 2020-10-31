@@ -16,3 +16,8 @@ class GUIUtility(object):
     def MessageBox(title:str,message:str):
         qt_module_wrapped.qutility_class.messageBox(qt_module_wrapped.qstr(title),qt_module_wrapped.qstr(message))
 
+    @staticmethod
+    def AskFont(title:str):
+        return qt_module_wrapped.qutility_class.askFont(qt_module_wrapped.qstr(title))
+
+

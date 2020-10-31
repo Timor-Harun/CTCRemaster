@@ -1,10 +1,9 @@
 #pragma once
+#ifndef WrappedWidget_H
+#define WrappedWidget_H
 
-#include <QtWidgets/QWidget>
-#include <boost/python.hpp>
-#include <QLayout>
-#include <QVector>
-#include <QStack>
+/******* QT Widget Class ********/
+#include <QWidget>
 #include <QPushButton>
 #include <QLabel>
 #include <QCheckBox>
@@ -12,222 +11,189 @@
 #include <QGroupBox>
 #include <QLineEdit>
 #include <QTabWidget>
-#include <QObjectUserData>
 #include <QComboBox>
-#include <QJsonParseError>
-#include <QJsonDocument>
-#include <QJsonObject>
-#include <QJsonArray>
-#include <QDebug>
+#include <QLayout>
 #include <QPlainTextEdit>
 #include <QButtonGroup>
 #include <QRadioButton>
 #include <QSpinBox>
 #include <QDoubleSpinBox>
 #include <QFontComboBox>
+
+/******* QT Json-Relative Class ********/
+#include <QJsonParseError>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QJsonArray>
+
+#include <QVector>
+#include <QStack>
+
+/******* QT Event Class ********/
 #include <QCloseEvent>
 
-#include "WrappedProgressBar.h"
-#include "IPAddress.h"
+/******* QT Other Class ********/
+#include <QDebug>
+
+/******* Custom Class ********/
 #include "WrappedTableWidget.h"
+#include "WrappedProgressBar.h"
+#include "WrappedTabWidget.h"
+#include "IPAddress.h"
 #include "ConsoleLogic.h"
 
+/// <summary>
+/// 根据 控件生成指令 按照 布局顺序 生成 窗口界面，同时绑定UI控件的事件
+/// </summary>
 class WrappedWidget : public QWidget
 {
-    Q_OBJECT
+	Q_OBJECT
 
 public:
-    WrappedWidget(QWidget *parent = Q_NULLPTR);
+	//构造函数以及析构函数
+	WrappedWidget(QWidget* parent = Q_NULLPTR);
+	~WrappedWidget() {  };
 
 private:
-    QString                uuid;
-    QVBoxLayout*           mainLayout;
-    QSet<QString>          objectNamesSets;
-    QStack<QLayout*>       layoutsStack;
-    QStack<QWidget*>       widgetsStack;
+	//窗口对应的uuid值，作为该窗口的唯一标识符
+	QString                uuid;
+
+	//窗口的主布局，位于布局栈的栈底
+	QVBoxLayout*		   mainLayout;
+
+	//对象名的集合，为了防止子对象包含重复的名称
+	QSet<QString>          objectNamesSets;
+
+	//布局栈
+	QStack<QLayout*>       layoutsStack;
+
+	//窗口指针栈
+	QStack<QWidget*>       widgetsStack;
+
+	//按钮组的指针，用于BeginButtonGroup
+	QButtonGroup*          pButtonGroup = nullptr;
+
+	//选项卡窗口的指针,用于BeginTab
+	QTabWidget*            pTabWidget = nullptr;
 
 Q_SIGNALS:
-    void signal_ButtonClickEvent(const QString &objectName);
-    void signal_EditFinished(const QString &objectName);
-    void signal_CheckBoxStageChanged(const QString &objectName);
-    void signal_TableSelectedIndexChanged(const QString& objectName,int row);
-    void signal_SpinBoxValueChanged(const QString& objectName, int value);
-    void signal_ButtonGroupToggled(const QString& objectName, int index,bool value);
+	/******** 以下定义了相关信号，当接受来自控件的事件后转发 ********/
 
-    void signal_close();
+	//按钮点击
+	void signal_ButtonClickEvent(const QString& objectName);
+
+	//编辑完成
+	void signal_EditFinished(const QString& objectName);
+
+	//勾选状态改变
+	void signal_CheckBoxStageChanged(const QString& objectName);
+
+	//表格选中行 改变
+	void signal_TableSelectedIndexChanged(const QString& objectName, int row);
+
+	//微调框数值改变
+	void signal_SpinBoxValueChanged(const QString& objectName, int value);
+
+	//按钮组选中 的按钮改变
+	void signal_ButtonGroupToggled(const QString& objectName, int index, bool value);
+
+	//窗口关闭
+	void signal_close();
+
 protected:
-    void closeEvent(QCloseEvent* event)
-    {
-        emit signal_close();
-    }
+	//重写关闭事件，当窗口关闭时，发射signal_close，以便主窗口处理并调用相应的方法
+	void closeEvent(QCloseEvent* event);
 public:
-    void setUUID(const QString& uuid);
+	//设置 唯一ID
+	void setUUID(const QString& uuid);
 
-    QString getUUID();
+	//获取唯一ID
+	QString getUUID();
 
-    void doHorizontalLayout();
+	/******* 动态 生成 UI 的核心部分 *******/
 
-    void doVerticalLayout();
+	/******* 布局部分 *******/
 
-    QPushButton* doButton(const QString& objectName, const QString& buttonText);
+	// 开始水平布局
+	void doHorizontalLayout();
 
-    QLineEdit* doLineEdit(const QString& objectName);
+	// 开始垂直布局
+	void doVerticalLayout();
 
-    void doSpacer(int spacing);
+	// 结束当前布局
+	void endLayout();
 
-    QComboBox* doComboBox(const QString& objectName, const QStringList& items);
+	// 填充空隙
+	void doSpacer(int spacing);
 
-    QCheckBox* doCheckBox(const QString& objectName, const QString& objectText, bool checked);
+	/******* Display 部分 *******/
 
-    WrappedProgressBar* doProgressBar(const QString& objectName, int value, int min, int max);
+	// 生成标签
+	QLabel* doLabel(const QString& objectName, const QString& text, bool imageMode,const QString &imagePath);
 
-    WrappedTableWidget* doTable(const QString& objectName, const QStringList& headerLabels);
+	// 生成进度条
+	WrappedProgressBar* doProgressBar(const QString& objectName, int value, int min, int max);
 
-    IPAddress* doIPAddress(const QString& objectName);
+	// 生成表格
+	WrappedTableWidget* doTable(const QString& objectName, const QStringList& headerLabels);
 
-    QLabel* doLabel(const QString& text);
+	/******* Clickable 部分 *******/
 
-    void doGroupBox(const QString& title);
+	// 生成按钮
+	QPushButton* doButton(const QString& objectName, const QString& buttonText);
 
-    void endGroupBox();
+	// 生成按钮组 下的子按钮
+	QRadioButton* doSubButton(const QString& buttonName, const QString& text, bool useIcon, const QString& iconPath = QString());
 
-    void endLayout();
-    
-    QSpinBox* doSpinBox(const QString& objectName, int min,int max,int step)
-    {
-        QSpinBox* box = new QSpinBox;
-        box->setObjectName(objectName);
-        box->setRange(min, max);
-        box->setSingleStep(step);
-		layoutsStack.top()->addWidget(box);
-		return box;
-    }
+	/******* Editable 部分 *******/
 
-	QDoubleSpinBox* doDoubleSpinBox(const QString& objectName, double min, double max, double step)
-	{
-        QDoubleSpinBox* box = new QDoubleSpinBox;
-		box->setObjectName(objectName);
-		box->setRange(min, max);
-		box->setSingleStep(step);
-		layoutsStack.top()->addWidget(box);
-		return box;
-	}
+	// 单行编辑框
+	QLineEdit* doLineEdit(const QString& objectName);
 
-    QPlainTextEdit* doPlainTextEdit(const QString& objectName)
-    {
-        QPlainTextEdit* edit = new QPlainTextEdit;
-        edit->setObjectName(objectName);
-		connect(edit, &QPlainTextEdit::textChanged, this, [=]() {emit signal_EditFinished(objectName); });
-		layoutsStack.top()->addWidget(edit);
-		return edit;
-    }
+	// 富文本编辑框
+	QPlainTextEdit* doPlainTextEdit(const QString& objectName);
 
-    QButtonGroup* pButtonGroup = nullptr;
-  
-    QButtonGroup* doBeginButtonGroup(const QString& groupName)
-    {
-        if (pButtonGroup)
-        {
-            Console->printWarning(called_info, "you can not call BeginButtonGroup before call EndButtonGroup");
-            return nullptr;
-        }
-        else
-        {
-            pButtonGroup = new QButtonGroup;
-            pButtonGroup->setExclusive(true);
-            pButtonGroup->setObjectName(groupName);
-            connect(pButtonGroup, (void (QButtonGroup::*)(int,bool))&QButtonGroup::buttonToggled, [=](int index,bool toggled) {
-                emit signal_ButtonGroupToggled(groupName, index, toggled);
-            });
-        }
-        return pButtonGroup;
-    }
+	// 整型微调框
+	QSpinBox* doSpinBox(const QString& objectName, int min, int max, int step);
 
-    QRadioButton* doSubButton(const QString& buttonName,const QString &text,bool useIcon,const QString &iconPath = QString())
-    {
-        if (!pButtonGroup)
-        {
-            Console->printError(called_info, "you can not call SubButton before call BeginButtonGroup");
-            return nullptr;
-        }
-        else
-        {
-            QRadioButton* radioButton = new QRadioButton(this);
-            radioButton->setObjectName(buttonName);
-            radioButton->setText(text);
-            if (useIcon)
-            {
-                radioButton->setIcon(QIcon(iconPath));
-            }
-            return radioButton;
-        }
-    }
+	// 双精度浮点型微调框
+	QDoubleSpinBox* doDoubleSpinBox(const QString& objectName, double min, double max, double step);
 
-    void doEndButtonGroup()
-    {
-		if (!pButtonGroup)
-		{
-			Console->printWarning(called_info, "you can not call EndButtonGroup before call BeginButtonGroup");
-		}
-        else
-        {
-            pButtonGroup = nullptr;
-        }
-    }
+	// IP地址编辑框
+	IPAddress* doIPAddress(const QString& objectName);
 
-    QTabWidget* pTabWidget = nullptr;
+	/******* Checkable 部分 *******/
 
-    QTabWidget* beginTab(const QString &tabName)
-    {
-        if (pTabWidget)
-        {
-			Console->printWarning(called_info, "you can not call BeginTab before call EndTab");
-			return nullptr;
-        }
-        else
-        {
-            pTabWidget = new QTabWidget;
-            pTabWidget->setObjectName(tabName);
-            layoutsStack.top()->addWidget(pTabWidget);
-        }
-        return pTabWidget;
-    }
+	// 组合框
+	QComboBox* doComboBox(const QString& objectName, const QStringList& items);
 
-    void endTab()
-    {
-		if (!pTabWidget)
-		{
-			Console->printWarning(called_info, "you can not call EndTab before call BeginTab ");
-		}
-		else
-		{
-            pTabWidget = nullptr;
-		}
-    }
-    
-    QWidget* beginSubTab(const QString &tabName,const QString &tabTitle)
-    {
-		if (!pTabWidget)
-		{
-			Console->printWarning(called_info, "you can not call BeginSubTab before call BeginTab");
-		}
-        QWidget* widget = new QWidget(pTabWidget);
-        widget->setObjectName(tabName);
-        widget->setLayout(new QGridLayout);
-        layoutsStack.push(widget->layout());
-        pTabWidget->addTab(widget, tabTitle);
-        return widget;
-    }
+	// 单选框
+	QCheckBox* doCheckBox(const QString& objectName, const QString& objectText, bool checked);
 
-    void endSubTab()
-    {
-		if (!pTabWidget)
-		{
-			Console->printWarning(called_info, "you can not call EndSubTab before call BeginSubTab");
-		}
-        else
-        {
-            layoutsStack.pop();
-        }
-    }
+	/******* Container 部分 *******/
+
+	// 开始分组框
+	void doGroupBox(const QString& title);
+
+	// 结束分组框
+	void endGroupBox();
+
+	// 开始按钮组
+	QButtonGroup* doBeginButtonGroup(const QString& groupName);
+
+	// 结束按钮组
+	void doEndButtonGroup();
+
+	// 开始选项卡窗口
+	QTabWidget* beginTab(const QString& tabName, bool styled);
+
+	// 结束选项卡窗口
+	void endTab();
+
+	// 开始子选项卡
+	QWidget* beginSubTab(const QString& tabName, const QString& tabTitle);
+
+	// 结束子选项卡
+	void endSubTab();
 };
+#endif
