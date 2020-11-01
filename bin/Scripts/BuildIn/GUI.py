@@ -646,6 +646,13 @@ class GUI(object):
             handle = ptr.findHandle(objectName)
             return handle.getRowCount()
 
+        @staticmethod
+        def FontInfo(self,objectName):
+            handle = GUI.UUIDToWidgetMap[self.getUUID()].findHandle(objectName)
+            if not handle:
+                Debug.printError(objectName+" not found")
+            else:
+                return handle.getFontInfo()
     class modify():
         @staticmethod
         def AppendTableItem(self,objectName,item:list):

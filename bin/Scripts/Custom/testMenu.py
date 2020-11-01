@@ -12,7 +12,7 @@ class testMenu(Menu):
     @staticmethod
     @Menu.MenuItem(path = '文件(&F)/保存(&S)',checkable = False,group = 0,pos = 0,shortcut = "CTRL+S")
     def action_SaveFile():
-        GUI.DisplayDialog("AboutDialog")
+        GUI.DisplayDialog("SettingDialog")
 
     @staticmethod
     @Menu.MenuItem(path = '文件(&F)/读取(&S)',checkable = False,group = 0,pos = 1,shortcut = "CTRL+R")
